@@ -1,4 +1,4 @@
-import { Flame, Drumstick, Wheat, Droplets } from "lucide-react";
+import { Flame, Drumstick } from "lucide-react";
 
 interface MealCardProps {
   name: string;
