@@ -87,6 +87,7 @@ function RootComponent() {
     <ThemeProvider>
       <AuthProvider>
         <AppLayout />
+        <Toaster position="top-center" richColors />
       </AuthProvider>
     </ThemeProvider>
   );
