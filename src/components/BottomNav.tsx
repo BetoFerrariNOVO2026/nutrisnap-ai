@@ -1,13 +1,20 @@
 import { Link, useLocation } from "@tanstack/react-router";
 import { Home, UtensilsCrossed, BarChart3, Settings, Camera } from "lucide-react";
 
-const navItems = [
+type NavItem = {
+  to: string;
+  icon: React.ComponentType<{ className?: string }>;
+  label: string;
+  isCenter?: boolean;
+};
+
+const navItems: NavItem[] = [
   { to: "/", icon: Home, label: "Home" },
   { to: "/meals", icon: UtensilsCrossed, label: "Meal" },
   { to: "/scan", icon: Camera, label: "", isCenter: true },
   { to: "/analytics", icon: BarChart3, label: "Analytics" },
   { to: "/settings", icon: Settings, label: "Settings" },
-] as const;
+];
 
 export function BottomNav() {
   const location = useLocation();
@@ -21,7 +28,7 @@ export function BottomNav() {
 
           if (item.isCenter) {
             return (
-              <Link key={item.to} to={item.to} className="-mt-6 flex flex-col items-center">
+              <Link key={item.to} to={item.to as "/"} className="-mt-6 flex flex-col items-center">
                 <div className="flex h-14 w-14 items-center justify-center rounded-full bg-primary shadow-lg shadow-primary/30 scan-pulse">
                   <Icon className="h-6 w-6 text-primary-foreground" />
                 </div>
@@ -32,7 +39,7 @@ export function BottomNav() {
           return (
             <Link
               key={item.to}
-              to={item.to}
+              to={item.to as "/"}
               className="flex flex-col items-center gap-1 px-3 py-1"
             >
               <Icon
