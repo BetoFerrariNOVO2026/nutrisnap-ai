@@ -2,6 +2,9 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Camera, Upload, ImageIcon, Zap } from "lucide-react";
 import { useState, useRef } from "react";
 import { NutritionResult } from "@/components/NutritionResult";
+import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/scan")({
   component: ScanPage,
@@ -12,38 +15,99 @@ function ScanPage() {
   const [analyzing, setAnalyzing] = useState(false);
   const [result, setResult] = useState<any>(null);
   const fileRef = useRef<HTMLInputElement>(null);
+  const { user } = useAuth();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
     const reader = new FileReader();
     reader.onload = () => {
-      setImage(reader.result as string);
-      simulateAnalysis();
+      const base64 = reader.result as string;
+      setImage(base64);
+      analyzeWithAI(base64);
     };
     reader.readAsDataURL(file);
   };
 
-  const simulateAnalysis = () => {
+  const analyzeWithAI = async (imageBase64: string) => {
     setAnalyzing(true);
     setResult(null);
-    setTimeout(() => {
+
+    try {
+      const { data, error } = await supabase.functions.invoke("analyze-food", {
+        body: { imageBase64 },
+      });
+
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+
+      setResult(data);
+    } catch (err: any) {
+      console.error("Analysis error:", err);
+      toast.error(err.message || "Erro ao analisar imagem");
+      // Fallback to mock data if AI fails
       setResult({
         foods: [
-          { name: "Arroz Branco", calories: 206, protein: 4, carbs: 45, fat: 0.4, portion: "150g" },
-          { name: "Feijão Preto", calories: 132, protein: 9, carbs: 24, fat: 0.5, portion: "100g" },
-          { name: "Frango Grelhado", calories: 165, protein: 31, carbs: 0, fat: 3.6, portion: "120g" },
-          { name: "Salada", calories: 25, protein: 1.5, carbs: 4, fat: 0.3, portion: "80g" },
+          { name: "Alimento detectado", calories: 200, protein: 10, carbs: 30, fat: 5, portion: "100g" },
         ],
-        healthScore: 7,
-        suggestions: [
-          "Troque arroz branco por integral para mais fibras",
-          "Adicione azeite de oliva para gorduras saudáveis",
-          "Ótima fonte de proteína com o frango grelhado!",
-        ],
+        healthScore: 5,
+        suggestions: ["Não foi possível analisar com IA. Tente novamente."],
       });
+    } finally {
       setAnalyzing(false);
-    }, 2500);
+    }
+  };
+
+  const saveMeal = async () => {
+    if (!user || !result) {
+      toast.error("Faça login para salvar refeições");
+      return;
+    }
+
+    try {
+      const totalCals = result.foods.reduce((a: number, f: any) => a + f.calories, 0);
+      const totalProtein = result.foods.reduce((a: number, f: any) => a + f.protein, 0);
+      const totalCarbs = result.foods.reduce((a: number, f: any) => a + f.carbs, 0);
+      const totalFat = result.foods.reduce((a: number, f: any) => a + f.fat, 0);
+
+      const mealName = result.foods.map((f: any) => f.name).join(", ");
+
+      const { data: meal, error: mealError } = await supabase
+        .from("meals")
+        .insert({
+          user_id: user.id,
+          name: mealName,
+          total_calories: totalCals,
+          total_protein: totalProtein,
+          total_carbs: totalCarbs,
+          total_fat: totalFat,
+          health_score: result.healthScore,
+          suggestions: result.suggestions,
+        })
+        .select()
+        .single();
+
+      if (mealError) throw mealError;
+
+      // Insert individual foods
+      const foods = result.foods.map((f: any) => ({
+        meal_id: meal.id,
+        name: f.name,
+        calories: f.calories,
+        protein: f.protein,
+        carbs: f.carbs,
+        fat: f.fat,
+        portion: f.portion,
+      }));
+
+      await supabase.from("meal_foods").insert(foods);
+
+      toast.success("Refeição salva com sucesso!");
+      resetScan();
+    } catch (err: any) {
+      console.error("Save error:", err);
+      toast.error("Erro ao salvar refeição");
+    }
   };
 
   const resetScan = () => {
@@ -92,7 +156,10 @@ function ScanPage() {
                 <Upload className="h-5 w-5 text-primary" />
                 <span className="text-sm font-medium text-foreground">Upload</span>
               </button>
-              <button className="flex items-center gap-2 rounded-xl bg-nutrisnap-surface p-4 border border-border">
+              <button
+                onClick={() => fileRef.current?.click()}
+                className="flex items-center gap-2 rounded-xl bg-nutrisnap-surface p-4 border border-border"
+              >
                 <ImageIcon className="h-5 w-5 text-primary" />
                 <span className="text-sm font-medium text-foreground">Galeria</span>
               </button>
@@ -103,10 +170,11 @@ function ScanPage() {
               <p className="text-xs text-foreground/80">Resultado em menos de 3 segundos com IA</p>
             </div>
 
-            <div className="text-center">
-              <p className="text-xs text-muted-foreground">2/3 scans gratuitos restantes hoje</p>
-              <button className="mt-1 text-xs font-semibold text-primary">Upgrade para PRO →</button>
-            </div>
+            {!user && (
+              <div className="text-center">
+                <p className="text-xs text-muted-foreground">Faça login para salvar suas refeições</p>
+              </div>
+            )}
           </div>
         ) : (
           <div className="space-y-4">
@@ -125,7 +193,7 @@ function ScanPage() {
                 foods={result.foods}
                 healthScore={result.healthScore}
                 suggestions={result.suggestions}
-                onDone={resetScan}
+                onDone={saveMeal}
                 onAdjust={() => {}}
               />
             )}
