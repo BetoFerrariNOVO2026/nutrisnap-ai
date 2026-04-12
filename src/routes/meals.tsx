@@ -1,33 +1,62 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { MealCard } from "@/components/MealCard";
+import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
+import { useState, useEffect } from "react";
+import { Link } from "@tanstack/react-router";
+import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
 
 export const Route = createFileRoute("/meals")({
   component: MealsPage,
 });
 
-const mealsByDay = [
-  {
-    date: "Hoje",
-    totalCals: 750,
-    meals: [
-      { name: "Caesar Salad", time: "9:00am", calories: 133, protein: 12, carbs: 10, fat: 5 },
-      { name: "Arroz com Feijão e Frango", time: "12:30pm", calories: 455, protein: 25, carbs: 55, fat: 15 },
-      { name: "Iogurte com Granola", time: "3:00pm", calories: 162, protein: 8, carbs: 22, fat: 6 },
-    ],
-  },
-  {
-    date: "Ontem",
-    totalCals: 1830,
-    meals: [
-      { name: "Pão com Ovo", time: "8:00am", calories: 280, protein: 14, carbs: 30, fat: 12 },
-      { name: "Macarrão ao Molho", time: "1:00pm", calories: 620, protein: 18, carbs: 85, fat: 15 },
-      { name: "Açaí com Banana", time: "4:00pm", calories: 350, protein: 5, carbs: 65, fat: 8 },
-      { name: "Sopa de Legumes", time: "7:30pm", calories: 180, protein: 6, carbs: 25, fat: 4 },
-    ],
-  },
-];
+interface Meal {
+  id: string;
+  name: string;
+  total_calories: number;
+  total_protein: number;
+  total_carbs: number;
+  total_fat: number;
+  scanned_at: string;
+}
 
 function MealsPage() {
+  const { user } = useAuth();
+  const [meals, setMeals] = useState<Meal[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!user) {
+      setLoading(false);
+      return;
+    }
+
+    const fetchMeals = async () => {
+      const { data } = await supabase
+        .from("meals")
+        .select("*")
+        .eq("user_id", user.id)
+        .order("scanned_at", { ascending: false })
+        .limit(50);
+
+      setMeals((data as Meal[]) || []);
+      setLoading(false);
+    };
+
+    fetchMeals();
+  }, [user]);
+
+  // Group meals by day
+  const grouped = meals.reduce<Record<string, Meal[]>>((acc, meal) => {
+    const day = format(new Date(meal.scanned_at), "dd/MM/yyyy");
+    if (!acc[day]) acc[day] = [];
+    acc[day].push(meal);
+    return acc;
+  }, {});
+
+  const today = format(new Date(), "dd/MM/yyyy");
+
   return (
     <div className="min-h-screen bg-background pb-24">
       <header className="px-5 pt-6 pb-4">
@@ -36,19 +65,47 @@ function MealsPage() {
       </header>
 
       <div className="px-5 space-y-6">
-        {mealsByDay.map((day) => (
-          <div key={day.date}>
-            <div className="flex items-center justify-between mb-3">
-              <h2 className="text-sm font-semibold text-foreground">{day.date}</h2>
-              <span className="text-xs text-primary font-medium">{day.totalCals} kcal</span>
-            </div>
-            <div className="space-y-3">
-              {day.meals.map((meal, i) => (
-                <MealCard key={i} {...meal} />
-              ))}
-            </div>
+        {!user ? (
+          <div className="text-center py-10">
+            <p className="text-sm text-muted-foreground mb-3">Faça login para ver suas refeições</p>
+            <Link to="/login" className="text-sm font-semibold text-primary">Entrar →</Link>
           </div>
-        ))}
+        ) : loading ? (
+          <div className="flex items-center justify-center py-10">
+            <div className="h-8 w-8 rounded-full border-4 border-primary border-t-transparent animate-spin" />
+          </div>
+        ) : meals.length === 0 ? (
+          <div className="text-center py-10">
+            <p className="text-sm text-muted-foreground mb-3">Nenhuma refeição registrada ainda</p>
+            <Link to="/scan" className="text-sm font-semibold text-primary">Escanear prato →</Link>
+          </div>
+        ) : (
+          Object.entries(grouped).map(([date, dayMeals]) => (
+            <div key={date}>
+              <div className="flex items-center justify-between mb-3">
+                <h2 className="text-sm font-semibold text-foreground">
+                  {date === today ? "Hoje" : date}
+                </h2>
+                <span className="text-xs text-primary font-medium">
+                  {Math.round(dayMeals.reduce((a, m) => a + Number(m.total_calories), 0))} kcal
+                </span>
+              </div>
+              <div className="space-y-3">
+                {dayMeals.map((meal) => (
+                  <MealCard
+                    key={meal.id}
+                    name={meal.name}
+                    time={format(new Date(meal.scanned_at), "HH:mm")}
+                    calories={Number(meal.total_calories)}
+                    protein={Number(meal.total_protein)}
+                    carbs={Number(meal.total_carbs)}
+                    fat={Number(meal.total_fat)}
+                  />
+                ))}
+              </div>
+            </div>
+          ))
+        )}
       </div>
     </div>
   );
