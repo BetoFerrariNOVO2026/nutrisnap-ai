@@ -1,5 +1,9 @@
 import { Outlet, Link, createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
 import { BottomNav } from "@/components/BottomNav";
+import { AuthProvider } from "@/hooks/useAuth";
+import { ThemeProvider } from "@/hooks/useTheme";
+import { useLocation } from "@tanstack/react-router";
+import { Toaster } from "sonner";
 
 import appCss from "../styles.css?url";
 
@@ -52,7 +56,7 @@ export const Route = createRootRoute({
 
 function RootShell({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="pt-BR">
+    <html lang="pt-BR" className="dark">
       <head>
         <HeadContent />
       </head>
@@ -64,13 +68,27 @@ function RootShell({ children }: { children: React.ReactNode }) {
   );
 }
 
-function RootComponent() {
+function AppLayout() {
+  const location = useLocation();
+  const hideNav = ["/login", "/sales", "/pricing"].includes(location.pathname);
+
   return (
     <>
       <div className="mx-auto max-w-lg">
         <Outlet />
       </div>
-      <BottomNav />
+      {!hideNav && <BottomNav />}
     </>
+  );
+}
+
+function RootComponent() {
+  return (
+    <ThemeProvider>
+      <AuthProvider>
+        <AppLayout />
+        <Toaster position="top-center" richColors />
+      </AuthProvider>
+    </ThemeProvider>
   );
 }

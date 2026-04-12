@@ -1,42 +1,61 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { User, Target, Scale, Ruler, Crown, ChevronRight, LogOut, Moon, Bell, HelpCircle } from "lucide-react";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { User, Target, Scale, Ruler, Crown, ChevronRight, LogOut, Moon, Sun, Bell, HelpCircle } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
+import { useTheme } from "@/hooks/useTheme";
+import { useNavigate } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/settings")({
   component: SettingsPage,
 });
 
 function SettingsPage() {
+  const { user, signOut } = useAuth();
+  const { theme, toggleTheme } = useTheme();
+  const navigate = useNavigate();
+
   const profile = {
-    name: "Maria Silva",
+    name: user?.email || "Visitante",
     goal: "Emagrecer",
     weight: 65,
     height: 165,
     dailyGoal: 2000,
   };
 
+  const handleLogout = async () => {
+    await signOut();
+    navigate({ to: "/sales" });
+  };
+
   const settingsGroups = [
     {
       title: "Perfil",
       items: [
-        { icon: User, label: "Dados pessoais", value: profile.name },
-        { icon: Target, label: "Objetivo", value: profile.goal },
-        { icon: Scale, label: "Peso atual", value: `${profile.weight} kg` },
-        { icon: Ruler, label: "Altura", value: `${profile.height} cm` },
+        { icon: User, label: "Dados pessoais", value: profile.name, action: undefined },
+        { icon: Target, label: "Objetivo", value: profile.goal, action: undefined },
+        { icon: Scale, label: "Peso atual", value: `${profile.weight} kg`, action: undefined },
+        { icon: Ruler, label: "Altura", value: `${profile.height} cm`, action: undefined },
       ],
     },
     {
       title: "Preferências",
       items: [
-        { icon: Bell, label: "Notificações", value: "Ativado" },
-        { icon: Moon, label: "Tema escuro", value: "Ativado" },
+        { icon: Bell, label: "Notificações", value: "Ativado", action: undefined },
+        {
+          icon: theme === "dark" ? Moon : Sun,
+          label: theme === "dark" ? "Tema escuro" : "Tema claro",
+          value: theme === "dark" ? "Escuro" : "Claro",
+          action: toggleTheme,
+        },
       ],
     },
     {
       title: "Conta",
       items: [
-        { icon: Crown, label: "Plano", value: "Gratuito" },
-        { icon: HelpCircle, label: "Ajuda", value: "" },
-        { icon: LogOut, label: "Sair", value: "" },
+        { icon: Crown, label: "Plano", value: "Gratuito", action: () => navigate({ to: "/pricing" }) },
+        { icon: HelpCircle, label: "Ajuda", value: "", action: undefined },
+        ...(user
+          ? [{ icon: LogOut, label: "Sair", value: "", action: handleLogout }]
+          : []),
       ],
     },
   ];
@@ -49,18 +68,28 @@ function SettingsPage() {
 
       <div className="px-5 space-y-6">
         {/* PRO Banner */}
-        <div className="rounded-2xl gradient-orange p-4 relative overflow-hidden">
-          <div className="relative z-10">
-            <div className="flex items-center gap-2 mb-1">
-              <Crown className="h-5 w-5 text-primary-foreground" />
-              <h2 className="text-sm font-bold text-primary-foreground">NutriSnap PRO</h2>
+        <Link to="/pricing">
+          <div className="rounded-2xl gradient-orange p-4 relative overflow-hidden">
+            <div className="relative z-10">
+              <div className="flex items-center gap-2 mb-1">
+                <Crown className="h-5 w-5 text-primary-foreground" />
+                <h2 className="text-sm font-bold text-primary-foreground">NutriSnap PRO</h2>
+              </div>
+              <p className="text-xs text-primary-foreground/80">Scans ilimitados, análise avançada e sugestões personalizadas</p>
+              <span className="mt-3 inline-block rounded-full bg-primary-foreground px-4 py-1.5 text-xs font-bold text-primary">
+                Assinar agora
+              </span>
             </div>
-            <p className="text-xs text-primary-foreground/80">Scans ilimitados, análise avançada e sugestões personalizadas</p>
-            <button className="mt-3 rounded-full bg-primary-foreground px-4 py-1.5 text-xs font-bold text-primary">
-              Assinar agora
-            </button>
           </div>
-        </div>
+        </Link>
+
+        {!user && (
+          <Link to="/login">
+            <div className="rounded-xl bg-primary/10 p-4 border border-primary/20 text-center">
+              <p className="text-sm font-semibold text-primary">Faça login para acessar todas as configurações</p>
+            </div>
+          </Link>
+        )}
 
         {settingsGroups.map((group) => (
           <div key={group.title}>
@@ -69,7 +98,11 @@ function SettingsPage() {
               {group.items.map((item) => {
                 const Icon = item.icon;
                 return (
-                  <button key={item.label} className="flex w-full items-center gap-3 p-4 hover:bg-secondary/50 transition-colors">
+                  <button
+                    key={item.label}
+                    onClick={item.action}
+                    className="flex w-full items-center gap-3 p-4 hover:bg-secondary/50 transition-colors"
+                  >
                     <Icon className="h-4 w-4 text-muted-foreground" />
                     <span className="flex-1 text-left text-sm text-foreground">{item.label}</span>
                     {item.value && <span className="text-xs text-muted-foreground">{item.value}</span>}
