@@ -1,8 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { User, Target, Scale, Ruler, Crown, ChevronRight, LogOut, Moon, Sun, Bell, HelpCircle } from "lucide-react";
+import { User, Target, Scale, Ruler, Crown, ChevronRight, LogOut, Moon, Sun, Bell, HelpCircle, Shield } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useTheme } from "@/hooks/useTheme";
 import { useNavigate } from "@tanstack/react-router";
+import { useAdmin } from "@/hooks/useAdmin";
 
 export const Route = createFileRoute("/settings")({
   component: SettingsPage,
@@ -12,6 +13,7 @@ function SettingsPage() {
   const { user, signOut } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
+  const { isAdmin } = useAdmin();
 
   const profile = {
     name: user?.email || "Visitante",
@@ -52,6 +54,9 @@ function SettingsPage() {
       title: "Conta",
       items: [
         { icon: Crown, label: "Plano", value: "Gratuito", action: () => navigate({ to: "/pricing" }) },
+        ...(isAdmin
+          ? [{ icon: Shield, label: "Área Admin", value: "", action: () => navigate({ to: "/admin" }) }]
+          : []),
         { icon: HelpCircle, label: "Ajuda", value: "", action: undefined },
         ...(user
           ? [{ icon: LogOut, label: "Sair", value: "", action: handleLogout }]
