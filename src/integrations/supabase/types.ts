@@ -103,6 +103,39 @@ export type Database = {
         }
         Relationships: []
       }
+      payment_webhooks: {
+        Row: {
+          created_at: string
+          customer_email: string | null
+          external_id: string | null
+          id: string
+          plan: string
+          processed_at: string | null
+          raw_payload: Json | null
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          customer_email?: string | null
+          external_id?: string | null
+          id?: string
+          plan: string
+          processed_at?: string | null
+          raw_payload?: Json | null
+          status?: string
+        }
+        Update: {
+          created_at?: string
+          customer_email?: string | null
+          external_id?: string | null
+          id?: string
+          plan?: string
+          processed_at?: string | null
+          raw_payload?: Json | null
+          status?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -112,6 +145,8 @@ export type Database = {
           goal: string | null
           height: number | null
           id: string
+          phone: string | null
+          subscription_plan: string
           updated_at: string
           user_id: string
           weight: number | null
@@ -124,6 +159,8 @@ export type Database = {
           goal?: string | null
           height?: number | null
           id?: string
+          phone?: string | null
+          subscription_plan?: string
           updated_at?: string
           user_id: string
           weight?: number | null
@@ -136,6 +173,8 @@ export type Database = {
           goal?: string | null
           height?: number | null
           id?: string
+          phone?: string | null
+          subscription_plan?: string
           updated_at?: string
           user_id?: string
           weight?: number | null

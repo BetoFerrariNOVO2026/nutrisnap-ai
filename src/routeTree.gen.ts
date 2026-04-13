@@ -16,7 +16,12 @@ import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as MealsRouteImport } from './routes/meals'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as AnalyticsRouteImport } from './routes/analytics'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AdminIndexRouteImport } from './routes/admin.index'
+import { Route as ApiPaymentWebhookRouteImport } from './routes/api/payment-webhook'
+import { Route as AdminWebhooksRouteImport } from './routes/admin.webhooks'
+import { Route as AdminUsersRouteImport } from './routes/admin.users'
 
 const SettingsRoute = SettingsRouteImport.update({
   id: '/settings',
@@ -53,14 +58,40 @@ const AnalyticsRoute = AnalyticsRouteImport.update({
   path: '/analytics',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminRoute,
+} as any)
+const ApiPaymentWebhookRoute = ApiPaymentWebhookRouteImport.update({
+  id: '/api/payment-webhook',
+  path: '/api/payment-webhook',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminWebhooksRoute = AdminWebhooksRouteImport.update({
+  id: '/webhooks',
+  path: '/webhooks',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminUsersRoute = AdminUsersRouteImport.update({
+  id: '/users',
+  path: '/users',
+  getParentRoute: () => AdminRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteWithChildren
   '/analytics': typeof AnalyticsRoute
   '/login': typeof LoginRoute
   '/meals': typeof MealsRoute
@@ -68,6 +99,10 @@ export interface FileRoutesByFullPath {
   '/sales': typeof SalesRoute
   '/scan': typeof ScanRoute
   '/settings': typeof SettingsRoute
+  '/admin/users': typeof AdminUsersRoute
+  '/admin/webhooks': typeof AdminWebhooksRoute
+  '/api/payment-webhook': typeof ApiPaymentWebhookRoute
+  '/admin/': typeof AdminIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -78,10 +113,15 @@ export interface FileRoutesByTo {
   '/sales': typeof SalesRoute
   '/scan': typeof ScanRoute
   '/settings': typeof SettingsRoute
+  '/admin/users': typeof AdminUsersRoute
+  '/admin/webhooks': typeof AdminWebhooksRoute
+  '/api/payment-webhook': typeof ApiPaymentWebhookRoute
+  '/admin': typeof AdminIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteWithChildren
   '/analytics': typeof AnalyticsRoute
   '/login': typeof LoginRoute
   '/meals': typeof MealsRoute
@@ -89,11 +129,16 @@ export interface FileRoutesById {
   '/sales': typeof SalesRoute
   '/scan': typeof ScanRoute
   '/settings': typeof SettingsRoute
+  '/admin/users': typeof AdminUsersRoute
+  '/admin/webhooks': typeof AdminWebhooksRoute
+  '/api/payment-webhook': typeof ApiPaymentWebhookRoute
+  '/admin/': typeof AdminIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/admin'
     | '/analytics'
     | '/login'
     | '/meals'
@@ -101,6 +146,10 @@ export interface FileRouteTypes {
     | '/sales'
     | '/scan'
     | '/settings'
+    | '/admin/users'
+    | '/admin/webhooks'
+    | '/api/payment-webhook'
+    | '/admin/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -111,9 +160,14 @@ export interface FileRouteTypes {
     | '/sales'
     | '/scan'
     | '/settings'
+    | '/admin/users'
+    | '/admin/webhooks'
+    | '/api/payment-webhook'
+    | '/admin'
   id:
     | '__root__'
     | '/'
+    | '/admin'
     | '/analytics'
     | '/login'
     | '/meals'
@@ -121,10 +175,15 @@ export interface FileRouteTypes {
     | '/sales'
     | '/scan'
     | '/settings'
+    | '/admin/users'
+    | '/admin/webhooks'
+    | '/api/payment-webhook'
+    | '/admin/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRoute: typeof AdminRouteWithChildren
   AnalyticsRoute: typeof AnalyticsRoute
   LoginRoute: typeof LoginRoute
   MealsRoute: typeof MealsRoute
@@ -132,6 +191,7 @@ export interface RootRouteChildren {
   SalesRoute: typeof SalesRoute
   ScanRoute: typeof ScanRoute
   SettingsRoute: typeof SettingsRoute
+  ApiPaymentWebhookRoute: typeof ApiPaymentWebhookRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -185,6 +245,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AnalyticsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -192,11 +259,54 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/': {
+      id: '/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/api/payment-webhook': {
+      id: '/api/payment-webhook'
+      path: '/api/payment-webhook'
+      fullPath: '/api/payment-webhook'
+      preLoaderRoute: typeof ApiPaymentWebhookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/webhooks': {
+      id: '/admin/webhooks'
+      path: '/webhooks'
+      fullPath: '/admin/webhooks'
+      preLoaderRoute: typeof AdminWebhooksRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/users': {
+      id: '/admin/users'
+      path: '/users'
+      fullPath: '/admin/users'
+      preLoaderRoute: typeof AdminUsersRouteImport
+      parentRoute: typeof AdminRoute
+    }
   }
 }
 
+interface AdminRouteChildren {
+  AdminUsersRoute: typeof AdminUsersRoute
+  AdminWebhooksRoute: typeof AdminWebhooksRoute
+  AdminIndexRoute: typeof AdminIndexRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminUsersRoute: AdminUsersRoute,
+  AdminWebhooksRoute: AdminWebhooksRoute,
+  AdminIndexRoute: AdminIndexRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRoute: AdminRouteWithChildren,
   AnalyticsRoute: AnalyticsRoute,
   LoginRoute: LoginRoute,
   MealsRoute: MealsRoute,
@@ -204,6 +314,7 @@ const rootRouteChildren: RootRouteChildren = {
   SalesRoute: SalesRoute,
   ScanRoute: ScanRoute,
   SettingsRoute: SettingsRoute,
+  ApiPaymentWebhookRoute: ApiPaymentWebhookRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
