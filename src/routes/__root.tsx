@@ -75,7 +75,13 @@ function RootShell({ children }: { children: React.ReactNode }) {
 
 function AppLayout() {
   const location = useLocation();
-  const hideNav = ["/login", "/sales", "/pricing"].includes(location.pathname);
+  const isAdmin = location.pathname.startsWith("/admin");
+  const isApi = location.pathname.startsWith("/api");
+  const hideNav = isAdmin || isApi || ["/login", "/sales", "/pricing"].includes(location.pathname);
+
+  if (isAdmin || isApi) {
+    return <Outlet />;
+  }
 
   return (
     <>
