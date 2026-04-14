@@ -2,7 +2,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { CalorieRing } from "@/components/CalorieRing";
 import { MacroCard } from "@/components/MacroCard";
 import { MealCard } from "@/components/MealCard";
-import { Bell, Flame } from "lucide-react";
+import { Bell, Flame, Sun, Moon } from "lucide-react";
+import { useTheme } from "@/hooks/useTheme";
 
 export const Route = createFileRoute("/")({
   component: HomePage,
