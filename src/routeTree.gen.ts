@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as ScanRouteImport } from './routes/scan'
 import { Route as SalesRouteImport } from './routes/sales'
+import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as MealsRouteImport } from './routes/meals'
 import { Route as LoginRouteImport } from './routes/login'
@@ -36,6 +37,11 @@ const ScanRoute = ScanRouteImport.update({
 const SalesRoute = SalesRouteImport.update({
   id: '/sales',
   path: '/sales',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProfileRoute = ProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PricingRoute = PricingRouteImport.update({
@@ -96,6 +102,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/meals': typeof MealsRoute
   '/pricing': typeof PricingRoute
+  '/profile': typeof ProfileRoute
   '/sales': typeof SalesRoute
   '/scan': typeof ScanRoute
   '/settings': typeof SettingsRoute
@@ -110,6 +117,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/meals': typeof MealsRoute
   '/pricing': typeof PricingRoute
+  '/profile': typeof ProfileRoute
   '/sales': typeof SalesRoute
   '/scan': typeof ScanRoute
   '/settings': typeof SettingsRoute
@@ -126,6 +134,7 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/meals': typeof MealsRoute
   '/pricing': typeof PricingRoute
+  '/profile': typeof ProfileRoute
   '/sales': typeof SalesRoute
   '/scan': typeof ScanRoute
   '/settings': typeof SettingsRoute
@@ -143,6 +152,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/meals'
     | '/pricing'
+    | '/profile'
     | '/sales'
     | '/scan'
     | '/settings'
@@ -157,6 +167,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/meals'
     | '/pricing'
+    | '/profile'
     | '/sales'
     | '/scan'
     | '/settings'
@@ -172,6 +183,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/meals'
     | '/pricing'
+    | '/profile'
     | '/sales'
     | '/scan'
     | '/settings'
@@ -188,6 +200,7 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   MealsRoute: typeof MealsRoute
   PricingRoute: typeof PricingRoute
+  ProfileRoute: typeof ProfileRoute
   SalesRoute: typeof SalesRoute
   ScanRoute: typeof ScanRoute
   SettingsRoute: typeof SettingsRoute
@@ -215,6 +228,13 @@ declare module '@tanstack/react-router' {
       path: '/sales'
       fullPath: '/sales'
       preLoaderRoute: typeof SalesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/profile': {
+      id: '/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof ProfileRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/pricing': {
@@ -311,6 +331,7 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   MealsRoute: MealsRoute,
   PricingRoute: PricingRoute,
+  ProfileRoute: ProfileRoute,
   SalesRoute: SalesRoute,
   ScanRoute: ScanRoute,
   SettingsRoute: SettingsRoute,

@@ -1,5 +1,6 @@
 import { Link, useLocation } from "@tanstack/react-router";
-import { Users, CreditCard, LayoutDashboard, ArrowLeft, Webhook } from "lucide-react";
+import { Users, CreditCard, LayoutDashboard, ArrowLeft, Webhook, Moon, Sun } from "lucide-react";
+import { useTheme } from "@/hooks/useTheme";
 
 const adminLinks = [
   { to: "/admin", icon: LayoutDashboard, label: "Dashboard" },
@@ -9,6 +10,7 @@ const adminLinks = [
 
 export function AdminSidebar() {
   const location = useLocation();
+  const { theme, toggleTheme } = useTheme();
 
   return (
     <aside className="hidden md:flex w-64 flex-col bg-nutrisnap-surface border-r border-border min-h-screen">
@@ -40,7 +42,14 @@ export function AdminSidebar() {
         })}
       </nav>
 
-      <div className="p-3 border-t border-border">
+      <div className="p-3 border-t border-border space-y-1">
+        <button
+          onClick={toggleTheme}
+          className="flex w-full items-center gap-2 px-3 py-2 text-sm text-muted-foreground hover:text-foreground transition-colors rounded-xl hover:bg-secondary/50"
+        >
+          {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+          {theme === "dark" ? "Modo claro" : "Modo escuro"}
+        </button>
         <Link
           to="/"
           className="flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
