@@ -10,6 +10,7 @@ export const Route = createFileRoute("/")({
 });
 
 function HomePage() {
+  const { theme, toggleTheme } = useTheme();
   const consumed = 750;
   const goal = 2000;
 
