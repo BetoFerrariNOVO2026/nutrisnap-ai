@@ -1,5 +1,6 @@
 import { Outlet, Link, createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
 import { BottomNav } from "@/components/BottomNav";
+import { AdminFloatingButton } from "@/components/AdminFloatingButton";
 import { AuthProvider } from "@/hooks/useAuth";
 import { ThemeProvider } from "@/hooks/useTheme";
 import { useLocation } from "@tanstack/react-router";
@@ -85,6 +86,7 @@ function AppLayout() {
 
   return (
     <>
+      <AdminFloatingButton />
       <div className="mx-auto max-w-lg">
         <Outlet />
       </div>
