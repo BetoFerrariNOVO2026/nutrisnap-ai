@@ -2,13 +2,15 @@ import { createFileRoute } from "@tanstack/react-router";
 import { CalorieRing } from "@/components/CalorieRing";
 import { MacroCard } from "@/components/MacroCard";
 import { MealCard } from "@/components/MealCard";
-import { Bell, Flame } from "lucide-react";
+import { Bell, Flame, Sun, Moon } from "lucide-react";
+import { useTheme } from "@/hooks/useTheme";
 
 export const Route = createFileRoute("/")({
   component: HomePage,
 });
 
 function HomePage() {
+  const { theme, toggleTheme } = useTheme();
   const consumed = 750;
   const goal = 2000;
 
@@ -30,6 +32,9 @@ function HomePage() {
           </div>
         </div>
         <div className="flex items-center gap-3">
+          <button onClick={toggleTheme} className="flex h-9 w-9 items-center justify-center rounded-full bg-secondary">
+            {theme === "dark" ? <Sun className="h-4 w-4 text-muted-foreground" /> : <Moon className="h-4 w-4 text-muted-foreground" />}
+          </button>
           <div className="flex items-center gap-1 rounded-full bg-secondary px-3 py-1">
             <span className="text-sm font-semibold text-foreground">15</span>
             <span className="text-sm">🔥</span>
