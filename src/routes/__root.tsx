@@ -86,6 +86,7 @@ function AppLayout() {
 
   return (
     <>
+      <AdminFloatingButton />
       <div className="mx-auto max-w-lg">
         <Outlet />
       </div>
