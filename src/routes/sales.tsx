@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Flame, Camera, BarChart3, Zap, Shield, Star, ChevronRight, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import salesHero from "@/assets/sales-hero.jpg";
 
 export const Route = createFileRoute("/sales")({
   component: SalesPage,
@@ -15,7 +16,7 @@ function SalesPage() {
   ];
 
   const testimonials = [
-    { name: "Ana Paula", text: "Perdi 8kg em 3 meses usando o NutriSnap diariamente!", rating: 5 },
+    { name: "Ana Paula", text: "Perdi 8kg em 3 meses usando o CaloriaX AI diariamente!", rating: 5 },
     { name: "Carlos M.", text: "Simples e rápido. Mudou minha relação com a comida.", rating: 5 },
     { name: "Juliana S.", text: "Melhor app de nutrição que já usei. A IA é incrível!", rating: 5 },
   ];
@@ -31,7 +32,7 @@ function SalesPage() {
               <div className="flex h-9 w-9 items-center justify-center rounded-xl gradient-orange">
                 <Flame className="h-4 w-4 text-primary-foreground" />
               </div>
-              <span className="text-base font-bold text-foreground font-display">NutriSnap AI</span>
+              <span className="text-base font-bold text-foreground font-display">CaloriaX AI</span>
             </div>
             <Link to="/login">
               <Button variant="outline" size="sm" className="rounded-full">
@@ -48,6 +49,11 @@ function SalesPage() {
             <p className="text-sm text-muted-foreground max-w-xs mx-auto">
               Análise nutricional instantânea por IA. Proteínas, carboidratos, gorduras e sugestões personalizadas.
             </p>
+          </div>
+
+          {/* Hero Image */}
+          <div className="rounded-2xl overflow-hidden mb-6 border border-border">
+            <img src={salesHero} alt="CaloriaX AI - Análise nutricional por foto" className="w-full h-auto" />
           </div>
 
           <div className="flex flex-col gap-3">
@@ -160,7 +166,7 @@ function SalesPage() {
           Pronto para transformar sua alimentação?
         </h2>
         <p className="text-xs text-muted-foreground mb-4">
-          Junte-se a milhares de pessoas que já usam o NutriSnap AI
+          Junte-se a milhares de pessoas que já usam o CaloriaX AI
         </p>
         <Link to="/login">
           <Button className="h-12 px-8 rounded-xl text-sm font-semibold gradient-orange text-primary-foreground border-0">
@@ -171,7 +177,7 @@ function SalesPage() {
       </div>
 
       <footer className="px-5 py-6 max-w-lg mx-auto text-center border-t border-border">
-        <p className="text-xs text-muted-foreground">© 2026 NutriSnap AI. Todos os direitos reservados.</p>
+        <p className="text-xs text-muted-foreground">© 2026 CaloriaX AI. Todos os direitos reservados.</p>
       </footer>
     </div>
   );
