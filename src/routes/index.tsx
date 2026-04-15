@@ -151,7 +151,7 @@ function HomePage() {
             <div className="flex h-8 w-8 items-center justify-center rounded-lg gradient-orange">
               <Flame className="h-4 w-4 text-primary-foreground" />
             </div>
-            <h1 className="text-lg font-bold text-foreground font-display">NutriSnap AI</h1>
+            <h1 className="text-lg font-bold text-foreground font-display"><h1 className="text-lg font-bold text-foreground font-display">CaloriaX AI</h1></h1>
           </div>
         </div>
         <div className="flex items-center gap-3">
