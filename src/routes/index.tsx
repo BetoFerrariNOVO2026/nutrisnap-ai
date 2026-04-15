@@ -130,12 +130,17 @@ function HomePage() {
 
   const goal = profile?.daily_calorie_goal || 2000;
 
-  // Build filter buttons: Hoje, Ontem + week days
-  const todayIndex = new Date().getDay();
-  const filters: { key: DateFilter; label: string }[] = [
+  const filterLabel = filter === "custom"
+    ? format(new Date(customDate + "T12:00:00"), "dd/MM/yyyy")
+    : filter === "hoje" ? "Hoje"
+    : filter === "ontem" ? "Ontem"
+    : weekDayLabels.find(w => w.key === filter)?.label || filter;
+
+  const allFilters: { key: DateFilter; label: string }[] = [
     { key: "hoje", label: "Hoje" },
     { key: "ontem", label: "Ontem" },
-    ...weekDayLabels.filter((_, i) => i !== todayIndex && i !== ((todayIndex - 1 + 7) % 7)),
+    ...weekDayLabels,
+    { key: "custom", label: "📅 Personalizado" },
   ];
 
   return (
@@ -160,20 +165,56 @@ function HomePage() {
       </header>
 
       <div className="px-5 mt-4">
-        <div className="flex gap-2 mb-6 overflow-x-auto pb-1">
-          {filters.map((f) => (
-            <button
-              key={f.key}
-              onClick={() => setFilter(f.key)}
-              className={`rounded-full px-4 py-1.5 text-xs font-semibold whitespace-nowrap ${
-                filter === f.key
-                  ? "bg-primary text-primary-foreground"
-                  : "bg-secondary text-muted-foreground"
-              }`}
-            >
-              {f.label}
-            </button>
-          ))}
+        {/* Collapsible Date Filter */}
+        <div className="mb-6">
+          <button
+            onClick={() => setFilterOpen(!filterOpen)}
+            className="w-full flex items-center justify-between rounded-xl bg-nutrisnap-surface border border-border px-4 py-3"
+          >
+            <div className="flex items-center gap-2">
+              <Calendar className="h-4 w-4 text-primary" />
+              <span className="text-sm font-semibold text-foreground">{filterLabel}</span>
+            </div>
+            <ChevronDown className={`h-4 w-4 text-muted-foreground transition-transform ${filterOpen ? "rotate-180" : ""}`} />
+          </button>
+
+          {filterOpen && (
+            <div className="mt-2 rounded-xl bg-nutrisnap-surface border border-border p-3 space-y-1">
+              {allFilters.map((f) => (
+                <button
+                  key={f.key}
+                  onClick={() => {
+                    if (f.key !== "custom") {
+                      setFilter(f.key);
+                      setFilterOpen(false);
+                    } else {
+                      setFilter("custom");
+                    }
+                  }}
+                  className={`w-full text-left rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
+                    filter === f.key
+                      ? "bg-primary text-primary-foreground"
+                      : "text-foreground hover:bg-secondary"
+                  }`}
+                >
+                  {f.label}
+                </button>
+              ))}
+              {filter === "custom" && (
+                <div className="pt-2 border-t border-border mt-2">
+                  <input
+                    type="date"
+                    value={customDate}
+                    onChange={(e) => {
+                      setCustomDate(e.target.value);
+                      setFilterOpen(false);
+                    }}
+                    className="w-full rounded-lg bg-secondary border border-border px-3 py-2 text-sm text-foreground"
+                  />
+                </div>
+              )}
+            </div>
+          )}
         </div>
 
         <div className="rounded-2xl bg-nutrisnap-surface p-5 border border-border">
