@@ -148,16 +148,24 @@ function ScanPage() {
               onChange={handleFileChange}
             />
 
+            <input
+              ref={galleryRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={handleFileChange}
+            />
+
             <div className="grid grid-cols-2 gap-3">
               <button
-                onClick={() => fileRef.current?.click()}
+                onClick={() => galleryRef.current?.click()}
                 className="flex items-center gap-2 rounded-xl bg-nutrisnap-surface p-4 border border-border"
               >
                 <Upload className="h-5 w-5 text-primary" />
                 <span className="text-sm font-medium text-foreground">Upload</span>
               </button>
               <button
-                onClick={() => fileRef.current?.click()}
+                onClick={() => galleryRef.current?.click()}
                 className="flex items-center gap-2 rounded-xl bg-nutrisnap-surface p-4 border border-border"
               >
                 <ImageIcon className="h-5 w-5 text-primary" />
