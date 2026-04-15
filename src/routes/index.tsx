@@ -65,6 +65,8 @@ function HomePage() {
   const [meals, setMeals] = useState<Meal[]>([]);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [filter, setFilter] = useState<DateFilter>("hoje");
+  const [customDate, setCustomDate] = useState<string>(format(new Date(), "yyyy-MM-dd"));
+  const [filterOpen, setFilterOpen] = useState(false);
   const [loading, setLoading] = useState(true);
 
   // Fetch profile
@@ -104,14 +106,14 @@ function HomePage() {
 
   // Filter meals by selected date
   const filteredMeals = useMemo(() => {
-    const targetDate = getDateForFilter(filter);
+    const targetDate = getDateForFilter(filter, filter === "custom" ? new Date(customDate + "T12:00:00") : undefined);
     const dayStart = startOfDay(targetDate);
     const dayEnd = endOfDay(targetDate);
     return meals.filter((m) => {
       const d = new Date(m.scanned_at);
       return d >= dayStart && d <= dayEnd;
     });
-  }, [meals, filter]);
+  }, [meals, filter, customDate]);
 
   // Calculate totals
   const totals = useMemo(() => {
