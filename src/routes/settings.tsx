@@ -78,7 +78,7 @@ function SettingsPage() {
             <div className="relative z-10">
               <div className="flex items-center gap-2 mb-1">
                 <Crown className="h-5 w-5 text-primary-foreground" />
-                <h2 className="text-sm font-bold text-primary-foreground">NutriSnap PRO</h2>
+                <h2 className="text-sm font-bold text-primary-foreground">CaloriaX PRO</h2>
               </div>
               <p className="text-xs text-primary-foreground/80">Scans ilimitados, análise avançada e sugestões personalizadas</p>
               <span className="mt-3 inline-block rounded-full bg-primary-foreground px-4 py-1.5 text-xs font-bold text-primary">
