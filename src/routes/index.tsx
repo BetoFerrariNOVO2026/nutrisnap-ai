@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { CalorieRing } from "@/components/CalorieRing";
 import { MacroCard } from "@/components/MacroCard";
 import { MealCard } from "@/components/MealCard";
-import { Bell, Flame, Sun, Moon } from "lucide-react";
+import { Bell, Flame, Sun, Moon, ChevronDown, Calendar } from "lucide-react";
 import { useTheme } from "@/hooks/useTheme";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
@@ -31,7 +31,7 @@ interface Profile {
   goal: string | null;
 }
 
-type DateFilter = "hoje" | "ontem" | "seg" | "ter" | "qua" | "qui" | "sex" | "sab" | "dom";
+type DateFilter = "hoje" | "ontem" | "seg" | "ter" | "qua" | "qui" | "sex" | "sab" | "dom" | "custom";
 
 const weekDayLabels: { key: DateFilter; label: string }[] = [
   { key: "dom", label: "Dom" },
@@ -43,7 +43,8 @@ const weekDayLabels: { key: DateFilter; label: string }[] = [
   { key: "sab", label: "Sáb" },
 ];
 
-function getDateForFilter(filter: DateFilter): Date {
+function getDateForFilter(filter: DateFilter, customDate?: Date): Date {
+  if (filter === "custom" && customDate) return customDate;
   const now = new Date();
   if (filter === "hoje") return now;
   if (filter === "ontem") return subDays(now, 1);
@@ -52,7 +53,6 @@ function getDateForFilter(filter: DateFilter): Date {
     dom: 0, seg: 1, ter: 2, qua: 3, qui: 4, sex: 5, sab: 6,
   };
   const targetDay = weekDayMap[filter];
-  const currentDay = now.getDay();
   const weekStart = startOfWeek(now, { weekStartsOn: 0 });
   const target = new Date(weekStart);
   target.setDate(weekStart.getDate() + targetDay);
