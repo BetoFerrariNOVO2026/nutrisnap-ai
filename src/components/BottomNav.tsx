@@ -30,7 +30,7 @@ export function BottomNav() {
             return (
               <Link key={item.to} to={item.to as "/"} className="-mt-6 flex flex-col items-center">
                 <div className="flex h-14 w-14 items-center justify-center rounded-full bg-primary shadow-lg shadow-primary/30 scan-pulse">
-                  <Icon className="h-6 w-6 text-primary-foreground" />
+                  <Icon className="h-6 w-6 text-white" />
                 </div>
               </Link>
             );
@@ -43,10 +43,10 @@ export function BottomNav() {
               className="flex flex-col items-center gap-1 px-3 py-1"
             >
               <Icon
-                className={`h-5 w-5 transition-colors ${isActive ? "text-primary" : "text-muted-foreground"}`}
+                className={`h-5 w-5 transition-colors ${isActive ? "text-primary" : "text-white/70"}`}
               />
               <span
-                className={`text-[10px] font-medium transition-colors ${isActive ? "text-primary" : "text-muted-foreground"}`}
+                className={`text-[10px] font-medium transition-colors ${isActive ? "text-primary" : "text-white/70"}`}
               >
                 {item.label}
               </span>
