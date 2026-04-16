@@ -39,7 +39,7 @@ function LoginPage() {
       if (error) {
         setError(error.message);
       } else {
-        navigate({ to: "/" });
+        navigate({ to: "/home" });
       }
     }
     setLoading(false);

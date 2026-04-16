@@ -1,264 +1,184 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { CalorieRing } from "@/components/CalorieRing";
-import { MacroCard } from "@/components/MacroCard";
-import { MealCard } from "@/components/MealCard";
-import { Bell, Flame, Sun, Moon, ChevronDown, Calendar } from "lucide-react";
-import { useTheme } from "@/hooks/useTheme";
-import { useAuth } from "@/hooks/useAuth";
-import { supabase } from "@/integrations/supabase/client";
-import { useState, useEffect, useMemo } from "react";
-import { format, subDays, startOfDay, endOfDay, startOfWeek, endOfWeek } from "date-fns";
-import { ptBR } from "date-fns/locale";
-import { Link } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { Flame, Camera, BarChart3, Zap, Shield, Star, ChevronRight, Check } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import salesHero from "@/assets/sales-hero.jpg";
 
 export const Route = createFileRoute("/")({
-  component: HomePage,
+  component: SalesPage,
 });
 
-interface Meal {
-  id: string;
-  name: string;
-  total_calories: number;
-  total_protein: number;
-  total_carbs: number;
-  total_fat: number;
-  scanned_at: string;
-  image_url: string | null;
-}
+function SalesPage() {
+  const features = [
+    { icon: Camera, title: "Escaneie seu prato", desc: "Tire uma foto e receba análise nutricional completa em segundos" },
+    { icon: Zap, title: "IA ultrarrápida", desc: "Resultado em menos de 3 segundos com inteligência artificial avançada" },
+    { icon: BarChart3, title: "Acompanhe sua evolução", desc: "Dashboard completo com histórico, gráficos e metas personalizadas" },
+    { icon: Shield, title: "Dados seguros", desc: "Seus dados são criptografados e protegidos com segurança máxima" },
+  ];
 
-interface Profile {
-  daily_calorie_goal: number | null;
-  goal: string | null;
-}
-
-type DateFilter = "hoje" | "ontem" | "seg" | "ter" | "qua" | "qui" | "sex" | "sab" | "dom" | "custom";
-
-const weekDayLabels: { key: DateFilter; label: string }[] = [
-  { key: "dom", label: "Dom" },
-  { key: "seg", label: "Seg" },
-  { key: "ter", label: "Ter" },
-  { key: "qua", label: "Qua" },
-  { key: "qui", label: "Qui" },
-  { key: "sex", label: "Sex" },
-  { key: "sab", label: "Sáb" },
-];
-
-function getDateForFilter(filter: DateFilter, customDate?: Date): Date {
-  if (filter === "custom" && customDate) return customDate;
-  const now = new Date();
-  if (filter === "hoje") return now;
-  if (filter === "ontem") return subDays(now, 1);
-
-  const weekDayMap: Record<string, number> = {
-    dom: 0, seg: 1, ter: 2, qua: 3, qui: 4, sex: 5, sab: 6,
-  };
-  const targetDay = weekDayMap[filter];
-  const weekStart = startOfWeek(now, { weekStartsOn: 0 });
-  const target = new Date(weekStart);
-  target.setDate(weekStart.getDate() + targetDay);
-  return target;
-}
-
-function HomePage() {
-  const { theme, toggleTheme } = useTheme();
-  const { user } = useAuth();
-  const [meals, setMeals] = useState<Meal[]>([]);
-  const [profile, setProfile] = useState<Profile | null>(null);
-  const [filter, setFilter] = useState<DateFilter>("hoje");
-  const [customDate, setCustomDate] = useState<string>(format(new Date(), "yyyy-MM-dd"));
-  const [filterOpen, setFilterOpen] = useState(false);
-  const [loading, setLoading] = useState(true);
-
-  // Fetch profile
-  useEffect(() => {
-    if (!user) return;
-    supabase
-      .from("profiles")
-      .select("daily_calorie_goal, goal")
-      .eq("user_id", user.id)
-      .single()
-      .then(({ data }) => {
-        if (data) setProfile(data as Profile);
-      });
-  }, [user]);
-
-  // Fetch meals for the whole week
-  useEffect(() => {
-    if (!user) {
-      setLoading(false);
-      return;
-    }
-    const weekStart = startOfWeek(new Date(), { weekStartsOn: 0 });
-    const weekEnd = endOfWeek(new Date(), { weekStartsOn: 0 });
-
-    supabase
-      .from("meals")
-      .select("*")
-      .eq("user_id", user.id)
-      .gte("scanned_at", startOfDay(weekStart).toISOString())
-      .lte("scanned_at", endOfDay(weekEnd).toISOString())
-      .order("scanned_at", { ascending: false })
-      .then(({ data }) => {
-        setMeals((data as Meal[]) || []);
-        setLoading(false);
-      });
-  }, [user]);
-
-  // Filter meals by selected date
-  const filteredMeals = useMemo(() => {
-    const targetDate = getDateForFilter(filter, filter === "custom" ? new Date(customDate + "T12:00:00") : undefined);
-    const dayStart = startOfDay(targetDate);
-    const dayEnd = endOfDay(targetDate);
-    return meals.filter((m) => {
-      const d = new Date(m.scanned_at);
-      return d >= dayStart && d <= dayEnd;
-    });
-  }, [meals, filter, customDate]);
-
-  // Calculate totals
-  const totals = useMemo(() => {
-    return filteredMeals.reduce(
-      (acc, m) => ({
-        calories: acc.calories + Number(m.total_calories || 0),
-        protein: acc.protein + Number(m.total_protein || 0),
-        carbs: acc.carbs + Number(m.total_carbs || 0),
-        fat: acc.fat + Number(m.total_fat || 0),
-      }),
-      { calories: 0, protein: 0, carbs: 0, fat: 0 }
-    );
-  }, [filteredMeals]);
-
-  const goal = profile?.daily_calorie_goal || 2000;
-
-  const filterLabel = filter === "custom"
-    ? format(new Date(customDate + "T12:00:00"), "dd/MM/yyyy")
-    : filter === "hoje" ? "Hoje"
-    : filter === "ontem" ? "Ontem"
-    : weekDayLabels.find(w => w.key === filter)?.label || filter;
-
-  const allFilters: { key: DateFilter; label: string }[] = [
-    { key: "hoje", label: "Hoje" },
-    { key: "ontem", label: "Ontem" },
-    ...weekDayLabels,
-    { key: "custom", label: "📅 Personalizado" },
+  const testimonials = [
+    { name: "Ana Paula", text: "Perdi 8kg em 3 meses usando o CaloriaX AI diariamente!", rating: 5 },
+    { name: "Carlos M.", text: "Simples e rápido. Mudou minha relação com a comida.", rating: 5 },
+    { name: "Juliana S.", text: "Melhor app de nutrição que já usei. A IA é incrível!", rating: 5 },
   ];
 
   return (
-    <div className="min-h-screen bg-background pb-24">
-      <header className="flex items-center justify-between px-5 pt-6 pb-2">
-        <div>
-          <div className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg gradient-orange">
-              <Flame className="h-4 w-4 text-primary-foreground" />
-            </div>
-            <h1 className="text-lg font-bold text-foreground font-display"><h1 className="text-lg font-bold text-foreground font-display">CaloriaX AI</h1></h1>
-          </div>
-        </div>
-        <div className="flex items-center gap-3">
-          <button onClick={toggleTheme} className="flex h-9 w-9 items-center justify-center rounded-full bg-secondary">
-            {theme === "dark" ? <Sun className="h-4 w-4 text-muted-foreground" /> : <Moon className="h-4 w-4 text-muted-foreground" />}
-          </button>
-          <button className="flex h-9 w-9 items-center justify-center rounded-full bg-secondary">
-            <Bell className="h-4 w-4 text-muted-foreground" />
-          </button>
-        </div>
-      </header>
-
-      <div className="px-5 mt-4">
-        {/* Collapsible Date Filter */}
-        <div className="mb-6">
-          <button
-            onClick={() => setFilterOpen(!filterOpen)}
-            className="w-full flex items-center justify-between rounded-xl bg-nutrisnap-surface border border-border px-4 py-3"
-          >
+    <div className="min-h-screen bg-background">
+      {/* Hero */}
+      <div className="relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-primary/10 to-transparent" />
+        <div className="relative px-5 pt-8 pb-10 max-w-lg mx-auto">
+          <div className="flex items-center justify-between mb-10">
             <div className="flex items-center gap-2">
-              <Calendar className="h-4 w-4 text-primary" />
-              <span className="text-sm font-semibold text-foreground">{filterLabel}</span>
+              <div className="flex h-9 w-9 items-center justify-center rounded-xl gradient-orange">
+                <Flame className="h-4 w-4 text-primary-foreground" />
+              </div>
+              <span className="text-base font-bold text-foreground font-display">CaloriaX AI</span>
             </div>
-            <ChevronDown className={`h-4 w-4 text-muted-foreground transition-transform ${filterOpen ? "rotate-180" : ""}`} />
-          </button>
-
-          {filterOpen && (
-            <div className="mt-2 rounded-xl bg-nutrisnap-surface border border-border p-3 space-y-1">
-              {allFilters.map((f) => (
-                <button
-                  key={f.key}
-                  onClick={() => {
-                    if (f.key !== "custom") {
-                      setFilter(f.key);
-                      setFilterOpen(false);
-                    } else {
-                      setFilter("custom");
-                    }
-                  }}
-                  className={`w-full text-left rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
-                    filter === f.key
-                      ? "bg-primary text-primary-foreground"
-                      : "text-foreground hover:bg-secondary"
-                  }`}
-                >
-                  {f.label}
-                </button>
-              ))}
-              {filter === "custom" && (
-                <div className="pt-2 border-t border-border mt-2">
-                  <input
-                    type="date"
-                    value={customDate}
-                    onChange={(e) => {
-                      setCustomDate(e.target.value);
-                      setFilterOpen(false);
-                    }}
-                    className="w-full rounded-lg bg-secondary border border-border px-3 py-2 text-sm text-foreground"
-                  />
-                </div>
-              )}
-            </div>
-          )}
-        </div>
-
-        <div className="rounded-2xl bg-nutrisnap-surface p-5 border border-border">
-          <div className="flex items-center justify-between">
-            <CalorieRing consumed={Math.round(totals.calories)} goal={goal} />
-            <div className="flex flex-col gap-4">
-              <MacroCard label="Proteína" value={Math.round(totals.protein)} unit="g" color="var(--color-nutrisnap-red)" goal={120} />
-              <MacroCard label="Carbs" value={Math.round(totals.carbs)} unit="g" color="var(--color-primary)" goal={250} />
-              <MacroCard label="Gorduras" value={Math.round(totals.fat)} unit="g" color="var(--color-nutrisnap-blue)" goal={65} />
-            </div>
+            <Link to="/login">
+              <Button variant="outline" size="sm" className="rounded-full">
+                Entrar
+              </Button>
+            </Link>
           </div>
-        </div>
 
-        <div className="mt-6">
-          <h2 className="text-sm font-semibold text-foreground mb-3">Refeições recentes</h2>
-          <div className="space-y-3">
-            {!user ? (
-              <div className="text-center py-6">
-                <p className="text-sm text-muted-foreground mb-2">Faça login para ver seus dados</p>
-                <Link to="/login" className="text-sm font-semibold text-primary">Entrar →</Link>
-              </div>
-            ) : loading ? (
-              <div className="flex items-center justify-center py-6">
-                <div className="h-8 w-8 rounded-full border-4 border-primary border-t-transparent animate-spin" />
-              </div>
-            ) : filteredMeals.length === 0 ? (
-              <p className="text-center text-sm text-muted-foreground py-6">Nenhuma refeição registrada neste dia</p>
-            ) : (
-              filteredMeals.map((meal) => (
-                <MealCard
-                  key={meal.id}
-                  name={meal.name}
-                  time={format(new Date(meal.scanned_at), "HH:mm")}
-                  calories={Number(meal.total_calories)}
-                  protein={Number(meal.total_protein)}
-                  carbs={Number(meal.total_carbs)}
-                  fat={Number(meal.total_fat)}
-                  imageUrl={meal.image_url || undefined}
-                />
-              ))
-            )}
+          <div className="text-center space-y-4 mb-8">
+            <h1 className="text-3xl font-bold text-foreground font-display leading-tight">
+              Descubra as calorias do seu prato com{" "}
+              <span className="text-primary">uma foto</span>
+            </h1>
+            <p className="text-sm text-muted-foreground max-w-xs mx-auto">
+              Análise nutricional instantânea por IA. Proteínas, carboidratos, gorduras e sugestões personalizadas.
+            </p>
+          </div>
+
+          {/* Hero Image */}
+          <div className="rounded-2xl overflow-hidden mb-6 border border-border">
+            <img src={salesHero} alt="CaloriaX AI - Análise nutricional por foto" className="w-full h-auto" />
+          </div>
+
+          <div className="flex flex-col gap-3">
+            <Link to="/login">
+              <Button className="w-full h-12 rounded-xl text-sm font-semibold gradient-orange text-primary-foreground border-0">
+                Começar grátis
+                <ChevronRight className="h-4 w-4 ml-1" />
+              </Button>
+            </Link>
+            <p className="text-center text-xs text-muted-foreground">
+              3 análises gratuitas por dia • Sem cartão de crédito
+            </p>
           </div>
         </div>
       </div>
+
+      {/* Features */}
+      <div className="px-5 py-10 max-w-lg mx-auto">
+        <h2 className="text-lg font-bold text-foreground font-display text-center mb-6">
+          Como funciona
+        </h2>
+        <div className="grid grid-cols-1 gap-4">
+          {features.map((f, i) => {
+            const Icon = f.icon;
+            return (
+              <div key={i} className="flex items-start gap-4 rounded-2xl bg-nutrisnap-surface p-4 border border-border">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/20">
+                  <Icon className="h-5 w-5 text-primary" />
+                </div>
+                <div>
+                  <h3 className="text-sm font-semibold text-foreground">{f.title}</h3>
+                  <p className="text-xs text-muted-foreground mt-1">{f.desc}</p>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Testimonials */}
+      <div className="px-5 py-10 max-w-lg mx-auto">
+        <h2 className="text-lg font-bold text-foreground font-display text-center mb-6">
+          O que dizem nossos usuários
+        </h2>
+        <div className="space-y-3">
+          {testimonials.map((t, i) => (
+            <div key={i} className="rounded-2xl bg-nutrisnap-surface p-4 border border-border">
+              <div className="flex items-center gap-1 mb-2">
+                {Array.from({ length: t.rating }).map((_, j) => (
+                  <Star key={j} className="h-3.5 w-3.5 fill-primary text-primary" />
+                ))}
+              </div>
+              <p className="text-xs text-foreground/80 mb-2">"{t.text}"</p>
+              <p className="text-xs font-semibold text-muted-foreground">{t.name}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Pricing preview */}
+      <div className="px-5 py-10 max-w-lg mx-auto">
+        <h2 className="text-lg font-bold text-foreground font-display text-center mb-2">
+          Planos
+        </h2>
+        <p className="text-xs text-muted-foreground text-center mb-6">Comece grátis, upgrade quando quiser</p>
+
+        <div className="grid grid-cols-2 gap-3">
+          <div className="rounded-2xl bg-nutrisnap-surface p-4 border border-border">
+            <h3 className="text-sm font-bold text-foreground mb-2">Gratuito</h3>
+            <p className="text-2xl font-bold text-foreground">R$0</p>
+            <p className="text-xs text-muted-foreground mb-3">/mês</p>
+            <div className="space-y-2">
+              <div className="flex items-center gap-2 text-xs text-foreground/80">
+                <Check className="h-3 w-3 text-nutrisnap-green" /> 3 scans/dia
+              </div>
+              <div className="flex items-center gap-2 text-xs text-foreground/80">
+                <Check className="h-3 w-3 text-nutrisnap-green" /> Histórico básico
+              </div>
+            </div>
+          </div>
+          <div className="rounded-2xl gradient-orange p-4 border border-primary/30 relative">
+            <div className="absolute -top-2 right-3 rounded-full bg-foreground px-2 py-0.5 text-[10px] font-bold text-background">
+              POPULAR
+            </div>
+            <h3 className="text-sm font-bold text-primary-foreground mb-2">PRO</h3>
+            <p className="text-2xl font-bold text-primary-foreground">R$19,90</p>
+            <p className="text-xs text-primary-foreground/80 mb-3">/mês</p>
+            <div className="space-y-2">
+              <div className="flex items-center gap-2 text-xs text-primary-foreground/90">
+                <Check className="h-3 w-3" /> Ilimitado
+              </div>
+              <div className="flex items-center gap-2 text-xs text-primary-foreground/90">
+                <Check className="h-3 w-3" /> IA avançada
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <Link to="/pricing" className="block mt-4">
+          <Button variant="outline" className="w-full rounded-xl">
+            Ver todos os planos
+            <ChevronRight className="h-4 w-4 ml-1" />
+          </Button>
+        </Link>
+      </div>
+
+      {/* CTA */}
+      <div className="px-5 py-10 max-w-lg mx-auto text-center">
+        <h2 className="text-lg font-bold text-foreground font-display mb-2">
+          Pronto para transformar sua alimentação?
+        </h2>
+        <p className="text-xs text-muted-foreground mb-4">
+          Junte-se a milhares de pessoas que já usam o CaloriaX AI
+        </p>
+        <Link to="/login">
+          <Button className="h-12 px-8 rounded-xl text-sm font-semibold gradient-orange text-primary-foreground border-0">
+            Criar conta grátis
+            <ChevronRight className="h-4 w-4 ml-1" />
+          </Button>
+        </Link>
+      </div>
+
+      <footer className="px-5 py-6 max-w-lg mx-auto text-center border-t border-border">
+        <p className="text-xs text-muted-foreground">© 2026 CaloriaX AI. Todos os direitos reservados.</p>
+      </footer>
     </div>
   );
 }

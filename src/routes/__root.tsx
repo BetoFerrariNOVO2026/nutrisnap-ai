@@ -21,7 +21,7 @@ function NotFoundComponent() {
         </p>
         <div className="mt-6">
           <Link
-            to="/"
+            to="/home"
             className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
           >
             Voltar ao início
@@ -78,7 +78,7 @@ function AppLayout() {
   const location = useLocation();
   const isAdmin = location.pathname.startsWith("/admin");
   const isApi = location.pathname.startsWith("/api");
-  const hideNav = isAdmin || isApi || ["/login", "/sales", "/pricing"].includes(location.pathname);
+  const hideNav = isAdmin || isApi || ["/login", "/", "/pricing"].includes(location.pathname);
 
   if (isAdmin || isApi) {
     return <Outlet />;
