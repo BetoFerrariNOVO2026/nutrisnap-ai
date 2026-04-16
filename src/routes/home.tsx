@@ -11,7 +11,7 @@ import { format, subDays, startOfDay, endOfDay, startOfWeek, endOfWeek } from "d
 import { ptBR } from "date-fns/locale";
 import { Link } from "@tanstack/react-router";
 
-export const Route = createFileRoute("/")({
+export const Route = createFileRoute("/home")({
   component: HomePage,
 });
 
