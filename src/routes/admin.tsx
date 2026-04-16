@@ -43,7 +43,7 @@ function AdminLayout() {
           <Shield className="h-12 w-12 text-destructive mx-auto mb-4" />
           <h1 className="text-xl font-bold text-foreground mb-2">Acesso negado</h1>
           <p className="text-sm text-muted-foreground mb-4">Você não tem permissão de administrador.</p>
-          <Link to="/" className="text-primary text-sm font-medium hover:underline">
+          <Link to="/home" className="text-primary text-sm font-medium hover:underline">
             Voltar ao app
           </Link>
         </div>
