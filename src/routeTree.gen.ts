@@ -14,9 +14,11 @@ import { Route as ScanRouteImport } from './routes/scan'
 import { Route as SalesRouteImport } from './routes/sales'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as PricingRouteImport } from './routes/pricing'
+import { Route as NotificationsRouteImport } from './routes/notifications'
 import { Route as MealsRouteImport } from './routes/meals'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as HomeRouteImport } from './routes/home'
+import { Route as HelpRouteImport } from './routes/help'
 import { Route as AnalyticsRouteImport } from './routes/analytics'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
@@ -50,6 +52,11 @@ const PricingRoute = PricingRouteImport.update({
   path: '/pricing',
   getParentRoute: () => rootRouteImport,
 } as any)
+const NotificationsRoute = NotificationsRouteImport.update({
+  id: '/notifications',
+  path: '/notifications',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MealsRoute = MealsRouteImport.update({
   id: '/meals',
   path: '/meals',
@@ -63,6 +70,11 @@ const LoginRoute = LoginRouteImport.update({
 const HomeRoute = HomeRouteImport.update({
   id: '/home',
   path: '/home',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HelpRoute = HelpRouteImport.update({
+  id: '/help',
+  path: '/help',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AnalyticsRoute = AnalyticsRouteImport.update({
@@ -105,9 +117,11 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
   '/analytics': typeof AnalyticsRoute
+  '/help': typeof HelpRoute
   '/home': typeof HomeRoute
   '/login': typeof LoginRoute
   '/meals': typeof MealsRoute
+  '/notifications': typeof NotificationsRoute
   '/pricing': typeof PricingRoute
   '/profile': typeof ProfileRoute
   '/sales': typeof SalesRoute
@@ -121,9 +135,11 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/analytics': typeof AnalyticsRoute
+  '/help': typeof HelpRoute
   '/home': typeof HomeRoute
   '/login': typeof LoginRoute
   '/meals': typeof MealsRoute
+  '/notifications': typeof NotificationsRoute
   '/pricing': typeof PricingRoute
   '/profile': typeof ProfileRoute
   '/sales': typeof SalesRoute
@@ -139,9 +155,11 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
   '/analytics': typeof AnalyticsRoute
+  '/help': typeof HelpRoute
   '/home': typeof HomeRoute
   '/login': typeof LoginRoute
   '/meals': typeof MealsRoute
+  '/notifications': typeof NotificationsRoute
   '/pricing': typeof PricingRoute
   '/profile': typeof ProfileRoute
   '/sales': typeof SalesRoute
@@ -158,9 +176,11 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/analytics'
+    | '/help'
     | '/home'
     | '/login'
     | '/meals'
+    | '/notifications'
     | '/pricing'
     | '/profile'
     | '/sales'
@@ -174,9 +194,11 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/analytics'
+    | '/help'
     | '/home'
     | '/login'
     | '/meals'
+    | '/notifications'
     | '/pricing'
     | '/profile'
     | '/sales'
@@ -191,9 +213,11 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/analytics'
+    | '/help'
     | '/home'
     | '/login'
     | '/meals'
+    | '/notifications'
     | '/pricing'
     | '/profile'
     | '/sales'
@@ -209,9 +233,11 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRouteWithChildren
   AnalyticsRoute: typeof AnalyticsRoute
+  HelpRoute: typeof HelpRoute
   HomeRoute: typeof HomeRoute
   LoginRoute: typeof LoginRoute
   MealsRoute: typeof MealsRoute
+  NotificationsRoute: typeof NotificationsRoute
   PricingRoute: typeof PricingRoute
   ProfileRoute: typeof ProfileRoute
   SalesRoute: typeof SalesRoute
@@ -257,6 +283,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PricingRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/notifications': {
+      id: '/notifications'
+      path: '/notifications'
+      fullPath: '/notifications'
+      preLoaderRoute: typeof NotificationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/meals': {
       id: '/meals'
       path: '/meals'
@@ -276,6 +309,13 @@ declare module '@tanstack/react-router' {
       path: '/home'
       fullPath: '/home'
       preLoaderRoute: typeof HomeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/help': {
+      id: '/help'
+      path: '/help'
+      fullPath: '/help'
+      preLoaderRoute: typeof HelpRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/analytics': {
@@ -348,9 +388,11 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRouteWithChildren,
   AnalyticsRoute: AnalyticsRoute,
+  HelpRoute: HelpRoute,
   HomeRoute: HomeRoute,
   LoginRoute: LoginRoute,
   MealsRoute: MealsRoute,
+  NotificationsRoute: NotificationsRoute,
   PricingRoute: PricingRoute,
   ProfileRoute: ProfileRoute,
   SalesRoute: SalesRoute,
