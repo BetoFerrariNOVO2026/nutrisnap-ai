@@ -41,7 +41,7 @@ function SettingsPage() {
     {
       title: "Preferências",
       items: [
-        { icon: Bell, label: "Notificações", value: "Ativado", action: undefined },
+        { icon: Bell, label: "Notificações", value: "", action: () => navigate({ to: "/notifications" }) },
         {
           icon: theme === "dark" ? Moon : Sun,
           label: theme === "dark" ? "Tema escuro" : "Tema claro",
@@ -57,7 +57,7 @@ function SettingsPage() {
         ...(isAdmin
           ? [{ icon: Shield, label: "Área Admin", value: "", action: () => navigate({ to: "/admin" }) }]
           : []),
-        { icon: HelpCircle, label: "Ajuda", value: "", action: undefined },
+        { icon: HelpCircle, label: "Ajuda", value: "", action: () => navigate({ to: "/help" }) },
         ...(user
           ? [{ icon: LogOut, label: "Sair", value: "", action: handleLogout }]
           : []),
