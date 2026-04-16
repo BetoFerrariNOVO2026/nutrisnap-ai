@@ -56,10 +56,11 @@ function ProfilePage() {
         display_name: form.display_name || null,
         goal: form.goal,
         weight: form.weight ? parseFloat(form.weight) : null,
+        target_weight: form.target_weight ? parseFloat(form.target_weight) : null,
         height: form.height ? parseFloat(form.height) : null,
         daily_calorie_goal: form.daily_calorie_goal ? parseInt(form.daily_calorie_goal) : 2000,
         phone: form.phone || null,
-      })
+      } as any)
       .eq("user_id", user.id);
 
     setSaving(false);
