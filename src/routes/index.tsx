@@ -1,5 +1,7 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useEffect } from "react";
 import { Flame, Camera, BarChart3, Zap, Shield, Star, ChevronRight, Check } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import salesHero from "@/assets/sales-hero.jpg";
 
@@ -8,6 +10,29 @@ export const Route = createFileRoute("/")({
 });
 
 function SalesPage() {
+  // Force light theme on sales page
+  useEffect(() => {
+    const html = document.documentElement;
+    const wasLight = html.classList.contains("light");
+    const wasDark = html.classList.contains("dark");
+    html.classList.remove("dark");
+    html.classList.add("light");
+    return () => {
+      html.classList.remove("light");
+      if (wasDark) html.classList.add("dark");
+      else if (wasLight) html.classList.add("light");
+    };
+  }, []);
+
+  // Redirect logged-in users to /home
+  const { user, loading } = useAuth();
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (!loading && user) {
+      navigate({ to: "/home" });
+    }
+  }, [user, loading, navigate]);
+
   const features = [
     { icon: Camera, title: "Escaneie seu prato", desc: "Tire uma foto e receba análise nutricional completa em segundos" },
     { icon: Zap, title: "IA ultrarrápida", desc: "Resultado em menos de 3 segundos com inteligência artificial avançada" },

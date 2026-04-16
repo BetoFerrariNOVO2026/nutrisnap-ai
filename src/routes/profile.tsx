@@ -18,6 +18,7 @@ function ProfilePage() {
     display_name: "",
     goal: "maintain",
     weight: "",
+    target_weight: "",
     height: "",
     daily_calorie_goal: "2000",
     phone: "",
@@ -36,6 +37,7 @@ function ProfilePage() {
             display_name: data.display_name || "",
             goal: data.goal || "maintain",
             weight: data.weight?.toString() || "",
+            target_weight: (data as any).target_weight?.toString() || "",
             height: data.height?.toString() || "",
             daily_calorie_goal: data.daily_calorie_goal?.toString() || "2000",
             phone: data.phone || "",
@@ -116,9 +118,29 @@ function ProfilePage() {
         </div>
 
         <div className="grid grid-cols-2 gap-3">
-          <Field label="Peso (kg)" value={form.weight} onChange={(v) => setForm({ ...form, weight: v })} type="number" />
-          <Field label="Altura (cm)" value={form.height} onChange={(v) => setForm({ ...form, height: v })} type="number" />
+          <Field label="Peso atual (kg)" value={form.weight} onChange={(v) => setForm({ ...form, weight: v })} type="number" placeholder="Ex: 65" />
+          <Field label="Altura (cm)" value={form.height} onChange={(v) => setForm({ ...form, height: v })} type="number" placeholder="Ex: 165" />
         </div>
+
+        <Field
+          label={
+            form.goal === "lose"
+              ? "Meta: perder quantos kg?"
+              : form.goal === "gain"
+              ? "Meta: ganhar quantos kg?"
+              : "Peso meta (kg)"
+          }
+          value={form.target_weight}
+          onChange={(v) => setForm({ ...form, target_weight: v })}
+          type="number"
+          placeholder={
+            form.goal === "lose"
+              ? "Ex: 7 (perder 7kg)"
+              : form.goal === "gain"
+              ? "Ex: 5 (ganhar 5kg)"
+              : "Ex: 60"
+          }
+        />
 
         <Field
           label="Meta calórica diária (kcal)"
