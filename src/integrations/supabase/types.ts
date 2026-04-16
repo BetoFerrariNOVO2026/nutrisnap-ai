@@ -147,6 +147,7 @@ export type Database = {
           id: string
           phone: string | null
           subscription_plan: string
+          target_weight: number | null
           updated_at: string
           user_id: string
           weight: number | null
@@ -161,6 +162,7 @@ export type Database = {
           id?: string
           phone?: string | null
           subscription_plan?: string
+          target_weight?: number | null
           updated_at?: string
           user_id: string
           weight?: number | null
@@ -175,6 +177,7 @@ export type Database = {
           id?: string
           phone?: string | null
           subscription_plan?: string
+          target_weight?: number | null
           updated_at?: string
           user_id?: string
           weight?: number | null
