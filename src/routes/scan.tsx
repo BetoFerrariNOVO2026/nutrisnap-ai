@@ -19,6 +19,7 @@ function ScanPage() {
   const [result, setResult] = useState<any>(null);
   const [todayCount, setTodayCount] = useState(0);
   const [plan, setPlan] = useState<string>("free");
+  const [upgradeOpen, setUpgradeOpen] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
   const galleryRef = useRef<HTMLInputElement>(null);
   const { user } = useAuth();
