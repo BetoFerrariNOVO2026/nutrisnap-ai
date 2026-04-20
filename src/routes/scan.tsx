@@ -23,7 +23,7 @@ function ScanPage() {
   const fileRef = useRef<HTMLInputElement>(null);
   const galleryRef = useRef<HTMLInputElement>(null);
   const { user } = useAuth();
-  const navigate = useNavigate();
+  
 
   const limitReached = plan === "free" && todayCount >= FREE_DAILY_LIMIT;
 
