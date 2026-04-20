@@ -219,7 +219,7 @@ function SalesPage() {
             <p className="text-xs text-muted-foreground mb-3">/mês</p>
             <div className="space-y-2">
               <div className="flex items-center gap-2 text-xs text-foreground/80">
-                <Check className="h-3 w-3 text-nutrisnap-green" /> 3 scans/dia
+                <Check className="h-3 w-3 text-nutrisnap-green" /> 1 scan/dia
               </div>
               <div className="flex items-center gap-2 text-xs text-foreground/80">
                 <Check className="h-3 w-3 text-nutrisnap-green" /> Histórico básico
@@ -231,7 +231,7 @@ function SalesPage() {
               POPULAR
             </div>
             <h3 className="text-sm font-bold text-primary-foreground mb-2">PRO</h3>
-            <p className="text-2xl font-bold text-primary-foreground">R$19,90</p>
+            <p className="text-2xl font-bold text-primary-foreground">R$10,00</p>
             <p className="text-xs text-primary-foreground/80 mb-3">/mês</p>
             <div className="space-y-2">
               <div className="flex items-center gap-2 text-xs text-primary-foreground/90">

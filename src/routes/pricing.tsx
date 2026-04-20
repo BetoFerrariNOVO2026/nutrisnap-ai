@@ -33,7 +33,7 @@ function PricingPage() {
           period: "/mo",
           description: "Perfect to try it out",
           features: [
-            "3 scans per day",
+            "1 scan per day",
             "7-day history",
             "Basic macro analysis",
             "Simple dashboard",
@@ -45,7 +45,7 @@ function PricingPage() {
         },
         {
           name: "PRO",
-          price: "$3.99",
+          price: "$1.99",
           period: "/mo",
           description: "For those who are serious",
           features: [
@@ -65,7 +65,7 @@ function PricingPage() {
         },
         {
           name: "Premium",
-          price: "$9.90",
+          price: "$3.40",
           period: "/mo",
           description: "For professionals",
           features: [
@@ -89,7 +89,7 @@ function PricingPage() {
           period: "/mês",
           description: "Perfeito para experimentar",
           features: [
-            "3 scans por dia",
+            "1 scan por dia",
             "Histórico de 7 dias",
             "Análise básica de macros",
             "Dashboard simplificado",
@@ -101,7 +101,7 @@ function PricingPage() {
         },
         {
           name: "PRO",
-          price: "R$19,90",
+          price: "R$10,00",
           period: "/mês",
           description: "Para quem leva a sério",
           features: [
@@ -121,7 +121,7 @@ function PricingPage() {
         },
         {
           name: "Premium",
-          price: "R$39,90",
+          price: "R$17,00",
           period: "/mês",
           description: "Para profissionais",
           features: [
