@@ -160,9 +160,10 @@ export const Route = createFileRoute("/api/payment-webhook")({
             { status: 200, headers: corsHeaders }
           );
         } catch (err: any) {
+          console.error("[payment-webhook] handler error:", err);
           return new Response(
-            JSON.stringify({ error: "Invalid request body" }),
-            { status: 400, headers: corsHeaders }
+            JSON.stringify({ error: "Internal error", message: err?.message }),
+            { status: 500, headers: corsHeaders }
           );
         }
       },
