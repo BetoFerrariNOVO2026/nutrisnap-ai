@@ -179,18 +179,16 @@ function ScanPage() {
                 <p className="text-xs text-primary-foreground/90 mb-3">
                   Você já usou seu scan gratuito de hoje. Assine PRO para scans ilimitados.
                 </p>
-                <Link to="/pricing">
-                  <span className="inline-flex items-center gap-1 rounded-full bg-primary-foreground px-4 py-1.5 text-xs font-bold text-primary">
-                    <Crown className="h-3 w-3" /> Fazer upgrade
-                  </span>
-                </Link>
+                <button onClick={() => setUpgradeOpen(true)} className="inline-flex items-center gap-1 rounded-full bg-primary-foreground px-4 py-1.5 text-xs font-bold text-primary">
+                  <Crown className="h-3 w-3" /> Fazer upgrade
+                </button>
               </div>
             )}
 
             <button
               onClick={() => {
                 if (limitReached) {
-                  navigate({ to: "/pricing" });
+                  setUpgradeOpen(true);
                   return;
                 }
                 fileRef.current?.click();
