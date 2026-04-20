@@ -1,6 +1,6 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { Camera, Upload, ImageIcon, Zap } from "lucide-react";
-import { useState, useRef } from "react";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { Camera, Upload, ImageIcon, Zap, Crown, Lock } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
 import { NutritionResult } from "@/components/NutritionResult";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
@@ -10,17 +10,54 @@ export const Route = createFileRoute("/scan")({
   component: ScanPage,
 });
 
+const FREE_DAILY_LIMIT = 1;
+
 function ScanPage() {
   const [image, setImage] = useState<string | null>(null);
   const [analyzing, setAnalyzing] = useState(false);
   const [result, setResult] = useState<any>(null);
+  const [todayCount, setTodayCount] = useState(0);
+  const [plan, setPlan] = useState<string>("free");
   const fileRef = useRef<HTMLInputElement>(null);
   const galleryRef = useRef<HTMLInputElement>(null);
   const { user } = useAuth();
+  const navigate = useNavigate();
+
+  const limitReached = plan === "free" && todayCount >= FREE_DAILY_LIMIT;
+
+  useEffect(() => {
+    if (!user) return;
+    const loadUsage = async () => {
+      const startOfDay = new Date();
+      startOfDay.setHours(0, 0, 0, 0);
+
+      const [{ count }, { data: profile }] = await Promise.all([
+        supabase
+          .from("meals")
+          .select("id", { count: "exact", head: true })
+          .eq("user_id", user.id)
+          .gte("scanned_at", startOfDay.toISOString()),
+        supabase
+          .from("profiles")
+          .select("subscription_plan")
+          .eq("user_id", user.id)
+          .maybeSingle(),
+      ]);
+
+      setPlan(profile?.subscription_plan || "free");
+      setTodayCount(count || 0);
+    };
+    loadUsage();
+  }, [user, result]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    if (limitReached) {
+      toast.error("Limite diário atingido. Faça upgrade para continuar.");
+      navigate({ to: "/pricing" });
+      return;
+    }
     const reader = new FileReader();
     reader.onload = () => {
       const base64 = reader.result as string;
