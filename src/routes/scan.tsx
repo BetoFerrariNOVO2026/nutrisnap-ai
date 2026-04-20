@@ -2,6 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { Camera, Upload, ImageIcon, Zap, Crown, Lock } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { NutritionResult } from "@/components/NutritionResult";
+import { UpgradeModal } from "@/components/UpgradeModal";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
