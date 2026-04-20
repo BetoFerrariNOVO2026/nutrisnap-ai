@@ -62,10 +62,17 @@ function ScanPage() {
     const file = e.target.files?.[0];
     if (!file) return;
     if (limitReached) {
-      toast.error("Limite diário atingido. Faça upgrade para continuar.");
-      navigate({ to: "/pricing" });
+      setUpgradeOpen(true);
       return;
     }
+    const reader = new FileReader();
+    reader.onload = () => {
+      const base64 = reader.result as string;
+      setImage(base64);
+      analyzeWithAI(base64);
+    };
+    reader.readAsDataURL(file);
+  };
     const reader = new FileReader();
     reader.onload = () => {
       const base64 = reader.result as string;
