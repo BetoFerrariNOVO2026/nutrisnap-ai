@@ -164,16 +164,52 @@ function ScanPage() {
       <div className="px-5">
         {!image ? (
           <div className="space-y-4">
+            {limitReached && (
+              <div className="rounded-2xl gradient-orange p-4 relative overflow-hidden">
+                <div className="flex items-center gap-2 mb-1">
+                  <Lock className="h-4 w-4 text-primary-foreground" />
+                  <h2 className="text-sm font-bold text-primary-foreground">Limite diário atingido</h2>
+                </div>
+                <p className="text-xs text-primary-foreground/90 mb-3">
+                  Você já usou seu scan gratuito de hoje. Assine PRO para scans ilimitados.
+                </p>
+                <Link to="/pricing">
+                  <span className="inline-flex items-center gap-1 rounded-full bg-primary-foreground px-4 py-1.5 text-xs font-bold text-primary">
+                    <Crown className="h-3 w-3" /> Fazer upgrade
+                  </span>
+                </Link>
+              </div>
+            )}
+
             <button
-              onClick={() => fileRef.current?.click()}
-              className="w-full aspect-[4/3] rounded-2xl border-2 border-dashed border-primary/30 bg-nutrisnap-surface flex flex-col items-center justify-center gap-4 transition-colors hover:border-primary/60"
+              onClick={() => {
+                if (limitReached) {
+                  navigate({ to: "/pricing" });
+                  return;
+                }
+                fileRef.current?.click();
+              }}
+              disabled={false}
+              className={`w-full aspect-[4/3] rounded-2xl border-2 border-dashed flex flex-col items-center justify-center gap-4 transition-colors ${
+                limitReached
+                  ? "border-muted bg-muted/30 opacity-60"
+                  : "border-primary/30 bg-nutrisnap-surface hover:border-primary/60"
+              }`}
             >
-              <div className="flex h-16 w-16 items-center justify-center rounded-full gradient-orange scan-pulse">
-                <Camera className="h-7 w-7 text-primary-foreground" />
+              <div className={`flex h-16 w-16 items-center justify-center rounded-full ${limitReached ? "bg-muted" : "gradient-orange scan-pulse"}`}>
+                {limitReached ? (
+                  <Lock className="h-7 w-7 text-muted-foreground" />
+                ) : (
+                  <Camera className="h-7 w-7 text-primary-foreground" />
+                )}
               </div>
               <div className="text-center">
-                <p className="text-sm font-semibold text-foreground">Toque para escanear</p>
-                <p className="text-xs text-muted-foreground mt-1">ou arraste uma imagem</p>
+                <p className="text-sm font-semibold text-foreground">
+                  {limitReached ? "Bloqueado" : "Toque para escanear"}
+                </p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {limitReached ? "Faça upgrade para continuar" : "ou arraste uma imagem"}
+                </p>
               </div>
             </button>
 
@@ -196,15 +232,17 @@ function ScanPage() {
 
             <div className="grid grid-cols-2 gap-3">
               <button
-                onClick={() => galleryRef.current?.click()}
-                className="flex items-center gap-2 rounded-xl bg-nutrisnap-surface p-4 border border-border"
+                onClick={() => !limitReached && galleryRef.current?.click()}
+                disabled={limitReached}
+                className="flex items-center gap-2 rounded-xl bg-nutrisnap-surface p-4 border border-border disabled:opacity-50"
               >
                 <Upload className="h-5 w-5 text-primary" />
                 <span className="text-sm font-medium text-foreground">Upload</span>
               </button>
               <button
-                onClick={() => galleryRef.current?.click()}
-                className="flex items-center gap-2 rounded-xl bg-nutrisnap-surface p-4 border border-border"
+                onClick={() => !limitReached && galleryRef.current?.click()}
+                disabled={limitReached}
+                className="flex items-center gap-2 rounded-xl bg-nutrisnap-surface p-4 border border-border disabled:opacity-50"
               >
                 <ImageIcon className="h-5 w-5 text-primary" />
                 <span className="text-sm font-medium text-foreground">Galeria</span>
@@ -213,7 +251,11 @@ function ScanPage() {
 
             <div className="flex items-center gap-2 rounded-xl bg-primary/10 p-3 border border-primary/20">
               <Zap className="h-4 w-4 text-primary shrink-0" />
-              <p className="text-xs text-foreground/80">Resultado em menos de 3 segundos com IA</p>
+              <p className="text-xs text-foreground/80">
+                {user && plan === "free"
+                  ? `${todayCount}/${FREE_DAILY_LIMIT} scan usado hoje • Plano Gratuito`
+                  : "Resultado em menos de 3 segundos com IA"}
+              </p>
             </div>
 
             {!user && (
