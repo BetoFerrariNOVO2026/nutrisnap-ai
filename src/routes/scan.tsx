@@ -1,4 +1,4 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { Camera, Upload, ImageIcon, Zap, Crown, Lock } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { NutritionResult } from "@/components/NutritionResult";
