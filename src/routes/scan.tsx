@@ -46,8 +46,14 @@ function ScanPage() {
           .maybeSingle(),
       ]);
 
-      setPlan(profile?.subscription_plan || "free");
-      setTodayCount(count || 0);
+      const userPlan = profile?.subscription_plan || "free";
+      const c = count || 0;
+      setPlan(userPlan);
+      setTodayCount(c);
+      // Auto-open modal if limit reached on page load
+      if (userPlan === "free" && c >= FREE_DAILY_LIMIT && !result) {
+        setUpgradeOpen(true);
+      }
     };
     loadUsage();
   }, [user, result]);
