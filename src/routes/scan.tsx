@@ -1,7 +1,8 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { Camera, Upload, ImageIcon, Zap, Crown, Lock } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { NutritionResult } from "@/components/NutritionResult";
+import { UpgradeModal } from "@/components/UpgradeModal";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -18,10 +19,11 @@ function ScanPage() {
   const [result, setResult] = useState<any>(null);
   const [todayCount, setTodayCount] = useState(0);
   const [plan, setPlan] = useState<string>("free");
+  const [upgradeOpen, setUpgradeOpen] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
   const galleryRef = useRef<HTMLInputElement>(null);
   const { user } = useAuth();
-  const navigate = useNavigate();
+  
 
   const limitReached = plan === "free" && todayCount >= FREE_DAILY_LIMIT;
 
@@ -44,8 +46,14 @@ function ScanPage() {
           .maybeSingle(),
       ]);
 
-      setPlan(profile?.subscription_plan || "free");
-      setTodayCount(count || 0);
+      const userPlan = profile?.subscription_plan || "free";
+      const c = count || 0;
+      setPlan(userPlan);
+      setTodayCount(c);
+      // Auto-open modal if limit reached on page load
+      if (userPlan === "free" && c >= FREE_DAILY_LIMIT && !result) {
+        setUpgradeOpen(true);
+      }
     };
     loadUsage();
   }, [user, result]);
@@ -54,8 +62,7 @@ function ScanPage() {
     const file = e.target.files?.[0];
     if (!file) return;
     if (limitReached) {
-      toast.error("Limite diário atingido. Faça upgrade para continuar.");
-      navigate({ to: "/pricing" });
+      setUpgradeOpen(true);
       return;
     }
     const reader = new FileReader();
@@ -66,7 +73,6 @@ function ScanPage() {
     };
     reader.readAsDataURL(file);
   };
-
   const analyzeWithAI = async (imageBase64: string) => {
     setAnalyzing(true);
     setResult(null);
@@ -173,18 +179,16 @@ function ScanPage() {
                 <p className="text-xs text-primary-foreground/90 mb-3">
                   Você já usou seu scan gratuito de hoje. Assine PRO para scans ilimitados.
                 </p>
-                <Link to="/pricing">
-                  <span className="inline-flex items-center gap-1 rounded-full bg-primary-foreground px-4 py-1.5 text-xs font-bold text-primary">
-                    <Crown className="h-3 w-3" /> Fazer upgrade
-                  </span>
-                </Link>
+                <button onClick={() => setUpgradeOpen(true)} className="inline-flex items-center gap-1 rounded-full bg-primary-foreground px-4 py-1.5 text-xs font-bold text-primary">
+                  <Crown className="h-3 w-3" /> Fazer upgrade
+                </button>
               </div>
             )}
 
             <button
               onClick={() => {
                 if (limitReached) {
-                  navigate({ to: "/pricing" });
+                  setUpgradeOpen(true);
                   return;
                 }
                 fileRef.current?.click();
@@ -232,17 +236,15 @@ function ScanPage() {
 
             <div className="grid grid-cols-2 gap-3">
               <button
-                onClick={() => !limitReached && galleryRef.current?.click()}
-                disabled={limitReached}
-                className="flex items-center gap-2 rounded-xl bg-nutrisnap-surface p-4 border border-border disabled:opacity-50"
+                onClick={() => limitReached ? setUpgradeOpen(true) : galleryRef.current?.click()}
+                className="flex items-center gap-2 rounded-xl bg-nutrisnap-surface p-4 border border-border"
               >
                 <Upload className="h-5 w-5 text-primary" />
                 <span className="text-sm font-medium text-foreground">Upload</span>
               </button>
               <button
-                onClick={() => !limitReached && galleryRef.current?.click()}
-                disabled={limitReached}
-                className="flex items-center gap-2 rounded-xl bg-nutrisnap-surface p-4 border border-border disabled:opacity-50"
+                onClick={() => limitReached ? setUpgradeOpen(true) : galleryRef.current?.click()}
+                className="flex items-center gap-2 rounded-xl bg-nutrisnap-surface p-4 border border-border"
               >
                 <ImageIcon className="h-5 w-5 text-primary" />
                 <span className="text-sm font-medium text-foreground">Galeria</span>
@@ -294,6 +296,8 @@ function ScanPage() {
           </div>
         )}
       </div>
+
+      <UpgradeModal open={upgradeOpen} onOpenChange={setUpgradeOpen} />
     </div>
   );
 }
