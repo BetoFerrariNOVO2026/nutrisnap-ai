@@ -219,7 +219,7 @@ function SalesPage() {
             <p className="text-xs text-muted-foreground mb-3">/mês</p>
             <div className="space-y-2">
               <div className="flex items-center gap-2 text-xs text-foreground/80">
-                <Check className="h-3 w-3 text-nutrisnap-green" /> 3 scans/dia
+                <Check className="h-3 w-3 text-nutrisnap-green" /> 1 scan/dia
               </div>
               <div className="flex items-center gap-2 text-xs text-foreground/80">
                 <Check className="h-3 w-3 text-nutrisnap-green" /> Histórico básico
