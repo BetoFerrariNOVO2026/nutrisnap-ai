@@ -73,15 +73,6 @@ function ScanPage() {
     };
     reader.readAsDataURL(file);
   };
-    const reader = new FileReader();
-    reader.onload = () => {
-      const base64 = reader.result as string;
-      setImage(base64);
-      analyzeWithAI(base64);
-    };
-    reader.readAsDataURL(file);
-  };
-
   const analyzeWithAI = async (imageBase64: string) => {
     setAnalyzing(true);
     setResult(null);
