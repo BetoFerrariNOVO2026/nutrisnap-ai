@@ -296,6 +296,8 @@ function ScanPage() {
           </div>
         )}
       </div>
+
+      <UpgradeModal open={upgradeOpen} onOpenChange={setUpgradeOpen} />
     </div>
   );
 }
