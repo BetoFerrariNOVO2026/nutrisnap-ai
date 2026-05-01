@@ -27,6 +27,10 @@ function useIsInternational() {
 function PricingPage() {
   const isIntl = useIsInternational();
 
+  useEffect(() => {
+    loadFacebookPixel(FB_PIXEL_ID);
+  }, []);
+
   const plans = isIntl
     ? [
         {
