@@ -38,12 +38,19 @@ function LoginPage() {
         setError(error.message);
       } else {
         setSuccess("Conta criada! Verifique seu email para confirmar.");
+        const fbq = (window as any).fbq;
+        if (fbq) {
+          fbq("track", "CompleteRegistration", { content_name: "signup", status: true });
+          fbq("track", "Lead", { content_name: "signup" });
+        }
       }
     } else {
       const { error } = await signIn(email, password);
       if (error) {
         setError(error.message);
       } else {
+        const fbq = (window as any).fbq;
+        if (fbq) fbq("trackCustom", "Login", { content_name: "login" });
         navigate({ to: "/home" });
       }
     }
