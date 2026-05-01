@@ -2,6 +2,8 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Check, Crown, ArrowLeft, Zap, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
+import { PWAInstallButton } from "@/components/PWAInstallButton";
+import { loadFacebookPixel, FB_PIXEL_ID } from "@/lib/fbPixel";
 
 export const Route = createFileRoute("/pricing")({
   component: PricingPage,
