@@ -26,6 +26,7 @@ import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as ApiPaymentWebhookRouteImport } from './routes/api/payment-webhook'
 import { Route as AdminWebhooksRouteImport } from './routes/admin.webhooks'
 import { Route as AdminUsersRouteImport } from './routes/admin.users'
+import { Route as ApiPublicWebhookReceiverRouteImport } from './routes/api/public/webhook-receiver'
 
 const SettingsRoute = SettingsRouteImport.update({
   id: '/settings',
@@ -112,6 +113,12 @@ const AdminUsersRoute = AdminUsersRouteImport.update({
   path: '/users',
   getParentRoute: () => AdminRoute,
 } as any)
+const ApiPublicWebhookReceiverRoute =
+  ApiPublicWebhookReceiverRouteImport.update({
+    id: '/api/public/webhook-receiver',
+    path: '/api/public/webhook-receiver',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -131,6 +138,7 @@ export interface FileRoutesByFullPath {
   '/admin/webhooks': typeof AdminWebhooksRoute
   '/api/payment-webhook': typeof ApiPaymentWebhookRoute
   '/admin/': typeof AdminIndexRoute
+  '/api/public/webhook-receiver': typeof ApiPublicWebhookReceiverRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -149,6 +157,7 @@ export interface FileRoutesByTo {
   '/admin/webhooks': typeof AdminWebhooksRoute
   '/api/payment-webhook': typeof ApiPaymentWebhookRoute
   '/admin': typeof AdminIndexRoute
+  '/api/public/webhook-receiver': typeof ApiPublicWebhookReceiverRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -169,6 +178,7 @@ export interface FileRoutesById {
   '/admin/webhooks': typeof AdminWebhooksRoute
   '/api/payment-webhook': typeof ApiPaymentWebhookRoute
   '/admin/': typeof AdminIndexRoute
+  '/api/public/webhook-receiver': typeof ApiPublicWebhookReceiverRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -190,6 +200,7 @@ export interface FileRouteTypes {
     | '/admin/webhooks'
     | '/api/payment-webhook'
     | '/admin/'
+    | '/api/public/webhook-receiver'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -208,6 +219,7 @@ export interface FileRouteTypes {
     | '/admin/webhooks'
     | '/api/payment-webhook'
     | '/admin'
+    | '/api/public/webhook-receiver'
   id:
     | '__root__'
     | '/'
@@ -227,6 +239,7 @@ export interface FileRouteTypes {
     | '/admin/webhooks'
     | '/api/payment-webhook'
     | '/admin/'
+    | '/api/public/webhook-receiver'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -244,6 +257,7 @@ export interface RootRouteChildren {
   ScanRoute: typeof ScanRoute
   SettingsRoute: typeof SettingsRoute
   ApiPaymentWebhookRoute: typeof ApiPaymentWebhookRoute
+  ApiPublicWebhookReceiverRoute: typeof ApiPublicWebhookReceiverRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -367,6 +381,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminUsersRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/api/public/webhook-receiver': {
+      id: '/api/public/webhook-receiver'
+      path: '/api/public/webhook-receiver'
+      fullPath: '/api/public/webhook-receiver'
+      preLoaderRoute: typeof ApiPublicWebhookReceiverRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -399,6 +420,7 @@ const rootRouteChildren: RootRouteChildren = {
   ScanRoute: ScanRoute,
   SettingsRoute: SettingsRoute,
   ApiPaymentWebhookRoute: ApiPaymentWebhookRoute,
+  ApiPublicWebhookReceiverRoute: ApiPublicWebhookReceiverRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

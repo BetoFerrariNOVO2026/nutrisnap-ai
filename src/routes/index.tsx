@@ -5,6 +5,8 @@ import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { motion, useInView } from "framer-motion";
 import salesHero from "@/assets/sales-hero.jpg";
+import { PWAInstallButton } from "@/components/PWAInstallButton";
+import { loadFacebookPixel, FB_PIXEL_ID } from "@/lib/fbPixel";
 
 export const Route = createFileRoute("/")({
   component: SalesPage,
@@ -43,6 +45,7 @@ function AnimatedSection({ children, className }: { children: React.ReactNode; c
 
 function SalesPage() {
   useEffect(() => {
+    loadFacebookPixel(FB_PIXEL_ID);
     const html = document.documentElement;
     const wasDark = html.classList.contains("dark");
     html.classList.remove("dark");
@@ -92,11 +95,14 @@ function SalesPage() {
               </div>
               <span className="text-base font-bold text-foreground font-display">CaloriaX AI</span>
             </div>
-            <Link to="/login">
-              <Button variant="outline" size="sm" className="rounded-full">
-                Entrar
-              </Button>
-            </Link>
+            <div className="flex items-center gap-2">
+              <PWAInstallButton />
+              <Link to="/login">
+                <Button variant="outline" size="sm" className="rounded-full">
+                  Entrar
+                </Button>
+              </Link>
+            </div>
           </motion.div>
 
           <motion.div

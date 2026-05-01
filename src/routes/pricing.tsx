@@ -2,6 +2,8 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Check, Crown, ArrowLeft, Zap, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
+import { PWAInstallButton } from "@/components/PWAInstallButton";
+import { loadFacebookPixel, FB_PIXEL_ID } from "@/lib/fbPixel";
 
 export const Route = createFileRoute("/pricing")({
   component: PricingPage,
@@ -24,6 +26,10 @@ function useIsInternational() {
 
 function PricingPage() {
   const isIntl = useIsInternational();
+
+  useEffect(() => {
+    loadFacebookPixel(FB_PIXEL_ID);
+  }, []);
 
   const plans = isIntl
     ? [
@@ -141,11 +147,12 @@ function PricingPage() {
 
   return (
     <div className="min-h-screen bg-background pb-10">
-      <header className="px-5 pt-6 pb-4">
+      <header className="px-5 pt-6 pb-4 flex items-center justify-between max-w-lg mx-auto">
         <Link to="/sales" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
           <ArrowLeft className="h-4 w-4" />
           {isIntl ? "Back" : "Voltar"}
         </Link>
+        <PWAInstallButton />
       </header>
 
       <div className="px-5 max-w-lg mx-auto">
