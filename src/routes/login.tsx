@@ -1,6 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
+import { loadFacebookPixel, FB_PIXEL_ID } from "@/lib/fbPixel";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Flame, Mail, Lock, Eye, EyeOff, ArrowLeft } from "lucide-react";
@@ -20,6 +21,10 @@ function LoginPage() {
   const [success, setSuccess] = useState("");
   const { signIn, signUp } = useAuth();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    loadFacebookPixel(FB_PIXEL_ID);
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
