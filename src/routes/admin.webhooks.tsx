@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Webhook, Copy, CheckCircle, Trash2, ChevronDown, ChevronRight } from "lucide-react";
+import { Fragment } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
@@ -150,8 +151,8 @@ function AdminWebhooksPage() {
           </TableHeader>
           <TableBody>
             {logs.map((log) => (
-              <>
-                <TableRow key={log.id}>
+              <Fragment key={log.id}>
+                <TableRow>
                   <TableCell>
                     <button onClick={() => toggleExpand(log.id)} className="text-muted-foreground hover:text-foreground">
                       {expanded[log.id] ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
@@ -192,7 +193,7 @@ function AdminWebhooksPage() {
                   </TableCell>
                 </TableRow>
                 {expanded[log.id] && (
-                  <TableRow key={log.id + "-payload"}>
+                  <TableRow>
                     <TableCell colSpan={6} className="bg-background/50">
                       <pre className="text-[11px] overflow-x-auto p-3 rounded-md bg-background border border-border max-h-72 overflow-y-auto">
                         {JSON.stringify(log.raw_payload, null, 2)}
@@ -200,7 +201,7 @@ function AdminWebhooksPage() {
                     </TableCell>
                   </TableRow>
                 )}
-              </>
+              </Fragment>
             ))}
             {logs.length === 0 && !loading && (
               <TableRow>
