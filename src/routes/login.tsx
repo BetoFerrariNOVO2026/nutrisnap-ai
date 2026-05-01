@@ -22,6 +22,10 @@ function LoginPage() {
   const { signIn, signUp } = useAuth();
   const navigate = useNavigate();
 
+  useEffect(() => {
+    loadFacebookPixel(FB_PIXEL_ID);
+  }, []);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
