@@ -232,6 +232,23 @@ function HomePage() {
           </div>
         </div>
 
+        <Link to="/recipes" className="mt-6 block group">
+          <div className="rounded-2xl gradient-orange p-4 border border-primary/30 relative overflow-hidden">
+            <div className="flex items-center gap-3">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary-foreground/20 backdrop-blur">
+                <ChefHat className="h-6 w-6 text-primary-foreground" />
+              </div>
+              <div className="flex-1">
+                <div className="flex items-center gap-1.5">
+                  <h3 className="text-sm font-bold text-primary-foreground">{t("recipesCardTitle")}</h3>
+                  <Sparkles className="h-3.5 w-3.5 text-primary-foreground" />
+                </div>
+                <p className="text-xs text-primary-foreground/85 mt-0.5">{t("recipesCardDesc")}</p>
+              </div>
+            </div>
+          </div>
+        </Link>
+
         <div className="mt-6">
           <h2 className="text-sm font-semibold text-foreground mb-3">Refeições recentes</h2>
           <div className="space-y-3">
