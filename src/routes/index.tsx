@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { motion, useInView } from "framer-motion";
 import salesHero from "@/assets/sales-hero.jpg";
 import { PWAInstallButton } from "@/components/PWAInstallButton";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { loadFacebookPixel, FB_PIXEL_ID } from "@/lib/fbPixel";
 
 export const Route = createFileRoute("/")({
@@ -96,6 +97,7 @@ function SalesPage() {
               <span className="text-base font-bold text-foreground font-display">CaloriaX AI</span>
             </div>
             <div className="flex items-center gap-2">
+              <LanguageSwitcher />
               <PWAInstallButton />
               <Link to="/login">
                 <Button variant="outline" size="sm" className="rounded-full">

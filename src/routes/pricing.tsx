@@ -154,7 +154,10 @@ function PricingPage() {
           <ArrowLeft className="h-4 w-4" />
           {isIntl ? "Back" : "Voltar"}
         </Link>
-        <PWAInstallButton />
+        <div className="flex items-center gap-2">
+          <LanguageSwitcher />
+          <PWAInstallButton />
+        </div>
       </header>
 
       <div className="px-5 max-w-lg mx-auto">
