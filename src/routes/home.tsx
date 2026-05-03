@@ -2,7 +2,9 @@ import { createFileRoute } from "@tanstack/react-router";
 import { CalorieRing } from "@/components/CalorieRing";
 import { MacroCard } from "@/components/MacroCard";
 import { MealCard } from "@/components/MealCard";
-import { Bell, Flame, Sun, Moon, ChevronDown, Calendar } from "lucide-react";
+import { Bell, Flame, Sun, Moon, ChevronDown, Calendar, ChefHat, Sparkles } from "lucide-react";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { useI18n } from "@/lib/i18n";
 import { useTheme } from "@/hooks/useTheme";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
@@ -62,6 +64,7 @@ function getDateForFilter(filter: DateFilter, customDate?: Date): Date {
 function HomePage() {
   const { theme, toggleTheme } = useTheme();
   const { user } = useAuth();
+  const { t } = useI18n();
   const [meals, setMeals] = useState<Meal[]>([]);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [filter, setFilter] = useState<DateFilter>("hoje");
@@ -154,7 +157,8 @@ function HomePage() {
             <h1 className="text-lg font-bold text-foreground font-display"><h1 className="text-lg font-bold text-foreground font-display">CaloriaX AI</h1></h1>
           </div>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
+          <LanguageSwitcher />
           <button onClick={toggleTheme} className="flex h-9 w-9 items-center justify-center rounded-full bg-secondary">
             {theme === "dark" ? <Sun className="h-4 w-4 text-muted-foreground" /> : <Moon className="h-4 w-4 text-muted-foreground" />}
           </button>
@@ -227,6 +231,23 @@ function HomePage() {
             </div>
           </div>
         </div>
+
+        <Link to="/recipes" className="mt-6 block group">
+          <div className="rounded-2xl gradient-orange p-4 border border-primary/30 relative overflow-hidden">
+            <div className="flex items-center gap-3">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary-foreground/20 backdrop-blur">
+                <ChefHat className="h-6 w-6 text-primary-foreground" />
+              </div>
+              <div className="flex-1">
+                <div className="flex items-center gap-1.5">
+                  <h3 className="text-sm font-bold text-primary-foreground">{t("recipesCardTitle")}</h3>
+                  <Sparkles className="h-3.5 w-3.5 text-primary-foreground" />
+                </div>
+                <p className="text-xs text-primary-foreground/85 mt-0.5">{t("recipesCardDesc")}</p>
+              </div>
+            </div>
+          </div>
+        </Link>
 
         <div className="mt-6">
           <h2 className="text-sm font-semibold text-foreground mb-3">Refeições recentes</h2>

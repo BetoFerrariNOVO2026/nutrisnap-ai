@@ -3,6 +3,7 @@ import { Check, Crown, ArrowLeft, Zap, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 import { PWAInstallButton } from "@/components/PWAInstallButton";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { loadFacebookPixel, FB_PIXEL_ID } from "@/lib/fbPixel";
 
 export const Route = createFileRoute("/pricing")({
@@ -90,24 +91,25 @@ function PricingPage() {
       ]
     : [
         {
-          name: "Gratuito",
-          price: "R$0",
+          name: "Start",
+          price: "R$9,90",
           period: "/mês",
-          description: "Perfeito para experimentar",
+          description: "Ideal para começar sua transformação",
           features: [
-            "1 scan por dia",
-            "Histórico de 7 dias",
-            "Análise básica de macros",
-            "Dashboard simplificado",
+            "5 scans por dia",
+            "Histórico de 30 dias",
+            "Análise nutricional com IA",
+            "Sugestões personalizadas",
+            "Receitas com IA",
           ],
-          ctaText: "Começar grátis",
+          ctaText: "Assinar Start",
           highlight: false,
           cardLink: null,
-          pixLink: null,
+          pixLink: "https://pay.lowify.com.br/go.php?offer=2jbo01y",
         },
         {
           name: "PRO",
-          price: "R$10,00",
+          price: "R$19,90",
           period: "/mês",
           description: "Para quem leva a sério",
           features: [
@@ -152,7 +154,10 @@ function PricingPage() {
           <ArrowLeft className="h-4 w-4" />
           {isIntl ? "Back" : "Voltar"}
         </Link>
-        <PWAInstallButton />
+        <div className="flex items-center gap-2">
+          <LanguageSwitcher />
+          <PWAInstallButton />
+        </div>
       </header>
 
       <div className="px-5 max-w-lg mx-auto">

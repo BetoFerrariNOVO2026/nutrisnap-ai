@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { motion, useInView } from "framer-motion";
 import salesHero from "@/assets/sales-hero.jpg";
 import { PWAInstallButton } from "@/components/PWAInstallButton";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { loadFacebookPixel, FB_PIXEL_ID } from "@/lib/fbPixel";
 
 export const Route = createFileRoute("/")({
@@ -96,6 +97,7 @@ function SalesPage() {
               <span className="text-base font-bold text-foreground font-display">CaloriaX AI</span>
             </div>
             <div className="flex items-center gap-2">
+              <LanguageSwitcher />
               <PWAInstallButton />
               <Link to="/login">
                 <Button variant="outline" size="sm" className="rounded-full">
@@ -220,15 +222,15 @@ function SalesPage() {
 
         <motion.div variants={fadeUp} transition={{ duration: 0.5 }} className="grid grid-cols-2 gap-3">
           <motion.div whileHover={{ scale: 1.03 }} transition={{ duration: 0.2 }} className="rounded-2xl bg-nutrisnap-surface p-4 border border-border">
-            <h3 className="text-sm font-bold text-foreground mb-2">Gratuito</h3>
-            <p className="text-2xl font-bold text-foreground">R$0</p>
+            <h3 className="text-sm font-bold text-foreground mb-2">Start</h3>
+            <p className="text-2xl font-bold text-foreground">R$9,90</p>
             <p className="text-xs text-muted-foreground mb-3">/mês</p>
             <div className="space-y-2">
               <div className="flex items-center gap-2 text-xs text-foreground/80">
-                <Check className="h-3 w-3 text-nutrisnap-green" /> 1 scan/dia
+                <Check className="h-3 w-3 text-nutrisnap-green" /> 5 scans/dia
               </div>
               <div className="flex items-center gap-2 text-xs text-foreground/80">
-                <Check className="h-3 w-3 text-nutrisnap-green" /> Histórico básico
+                <Check className="h-3 w-3 text-nutrisnap-green" /> Receitas com IA
               </div>
             </div>
           </motion.div>
@@ -237,7 +239,7 @@ function SalesPage() {
               POPULAR
             </div>
             <h3 className="text-sm font-bold text-primary-foreground mb-2">PRO</h3>
-            <p className="text-2xl font-bold text-primary-foreground">R$10,00</p>
+            <p className="text-2xl font-bold text-primary-foreground">R$19,90</p>
             <p className="text-xs text-primary-foreground/80 mb-3">/mês</p>
             <div className="space-y-2">
               <div className="flex items-center gap-2 text-xs text-primary-foreground/90">
