@@ -64,6 +64,7 @@ function getDateForFilter(filter: DateFilter, customDate?: Date): Date {
 function HomePage() {
   const { theme, toggleTheme } = useTheme();
   const { user } = useAuth();
+  const { t } = useI18n();
   const [meals, setMeals] = useState<Meal[]>([]);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [filter, setFilter] = useState<DateFilter>("hoje");
