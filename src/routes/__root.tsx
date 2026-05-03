@@ -3,6 +3,7 @@ import { BottomNav } from "@/components/BottomNav";
 import { AdminFloatingButton } from "@/components/AdminFloatingButton";
 import { AuthProvider } from "@/hooks/useAuth";
 import { ThemeProvider } from "@/hooks/useTheme";
+import { I18nProvider } from "@/lib/i18n";
 import { useLocation } from "@tanstack/react-router";
 import { Toaster } from "sonner";
 
@@ -105,10 +106,12 @@ function AppLayout() {
 function RootComponent() {
   return (
     <ThemeProvider>
-      <AuthProvider>
-        <AppLayout />
-        <Toaster position="top-center" richColors />
-      </AuthProvider>
+      <I18nProvider>
+        <AuthProvider>
+          <AppLayout />
+          <Toaster position="top-center" richColors />
+        </AuthProvider>
+      </I18nProvider>
     </ThemeProvider>
   );
 }
