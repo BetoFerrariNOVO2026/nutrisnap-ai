@@ -129,7 +129,7 @@ function PricingPage() {
         },
         {
           name: "Premium",
-          price: "R$17,00",
+          price: "R$39,90",
           period: "/mês",
           description: "Para profissionais",
           features: [
