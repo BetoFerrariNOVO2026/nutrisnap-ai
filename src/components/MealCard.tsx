@@ -1,4 +1,4 @@
-import { Flame, Drumstick, Trash2 } from "lucide-react";
+import { Flame, UtensilsCrossed, Trash2 } from "lucide-react";
 import { useState } from "react";
 import {
   AlertDialog,
@@ -27,17 +27,21 @@ export function MealCard({ name, time, calories, protein, carbs, fat, imageUrl, 
   const [imgError, setImgError] = useState(false);
   return (
     <div className="flex items-center gap-3 rounded-xl bg-nutrisnap-surface p-3 border border-border">
-      <div className="h-14 w-14 shrink-0 overflow-hidden rounded-lg bg-muted">
+      <div className="h-14 w-14 shrink-0 overflow-hidden rounded-lg border border-border/50 bg-muted">
         {imageUrl && !imgError ? (
           <img
             src={imageUrl}
             alt={name}
+            loading="lazy"
             className="h-full w-full object-cover"
             onError={() => setImgError(true)}
           />
         ) : (
-          <div className="flex h-full w-full items-center justify-center">
-            <Drumstick className="h-6 w-6 text-muted-foreground" />
+          <div
+            className="flex h-full w-full items-center justify-center gradient-orange"
+            aria-label="Sem foto"
+          >
+            <UtensilsCrossed className="h-6 w-6 text-primary-foreground/90" />
           </div>
         )}
       </div>
