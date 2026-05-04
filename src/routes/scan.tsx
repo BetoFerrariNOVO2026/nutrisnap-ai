@@ -116,6 +116,32 @@ function ScanPage() {
 
       const mealName = result.foods.map((f: any) => f.name).join(", ");
 
+      // Upload meal image to storage if available
+      let imageUrl: string | null = null;
+      if (image && image.startsWith("data:")) {
+        try {
+          const match = image.match(/^data:(image\/[a-zA-Z+]+);base64,(.+)$/);
+          if (match) {
+            const mime = match[1];
+            const ext = mime.split("/")[1].replace("jpeg", "jpg").split("+")[0];
+            const bytes = Uint8Array.from(atob(match[2]), (c) => c.charCodeAt(0));
+            const blob = new Blob([bytes], { type: mime });
+            const path = `${user.id}/${Date.now()}.${ext}`;
+            const { error: upErr } = await supabase.storage
+              .from("meal-images")
+              .upload(path, blob, { contentType: mime, upsert: false });
+            if (!upErr) {
+              const { data: pub } = supabase.storage.from("meal-images").getPublicUrl(path);
+              imageUrl = pub.publicUrl;
+            } else {
+              console.error("Upload error:", upErr);
+            }
+          }
+        } catch (e) {
+          console.error("Image upload failed:", e);
+        }
+      }
+
       const { data: meal, error: mealError } = await supabase
         .from("meals")
         .insert({
@@ -127,6 +153,7 @@ function ScanPage() {
           total_fat: totalFat,
           health_score: result.healthScore,
           suggestions: result.suggestions,
+          image_url: imageUrl,
         })
         .select()
         .single();
