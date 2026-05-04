@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import { PWAInstallButton } from "@/components/PWAInstallButton";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { loadFacebookPixel, FB_PIXEL_ID } from "@/lib/fbPixel";
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/pricing")({
   component: PricingPage,
@@ -27,6 +28,7 @@ function useIsInternational() {
 
 function PricingPage() {
   const isIntl = useIsInternational();
+  const { t } = useI18n();
 
   useEffect(() => {
     loadFacebookPixel(FB_PIXEL_ID);
@@ -91,56 +93,56 @@ function PricingPage() {
       ]
     : [
         {
-          name: "Start",
-          price: "R$9,90",
-          period: "/mês",
-          description: "Ideal para começar sua transformação",
+          name: t("planStartName"),
+          price: "R$ 9,90",
+          period: t("perMonth"),
+          description: t("planStartDesc"),
           features: [
-            "5 scans por dia",
-            "Histórico de 30 dias",
-            "Análise nutricional com IA",
-            "Sugestões personalizadas",
-            "Receitas com IA",
+            t("planStartF1"),
+            t("planStartF2"),
+            t("planStartF3"),
+            t("planStartF4"),
+            t("planStartF5"),
           ],
-          ctaText: "Assinar Start",
+          ctaText: t("planStartCta"),
           highlight: false,
           cardLink: null,
           pixLink: "https://pay.lowify.com.br/go.php?offer=2jbo01y",
         },
         {
-          name: "PRO",
-          price: "R$19,90",
-          period: "/mês",
-          description: "Para quem leva a sério",
+          name: t("planProName"),
+          price: "R$ 19,90",
+          period: t("perMonth"),
+          description: t("planProDesc"),
           features: [
-            "Scans ilimitados",
-            "Histórico completo",
-            "Análise avançada com IA",
-            "Sugestões personalizadas",
-            "Dashboard completo",
-            "Exportar relatórios",
-            "Suporte prioritário",
+            t("planProF1"),
+            t("planProF2"),
+            t("planProF3"),
+            t("planProF4"),
+            t("planProF5"),
+            t("planProF6"),
+            t("planProF7"),
           ],
-          ctaText: "Assinar PRO",
+          ctaText: t("planProCta"),
           highlight: true,
-          badge: "MAIS POPULAR",
+          badge: t("mostPopular"),
           cardLink: "https://adsroi.com.br/checkout/9PmDwk",
           pixLink: "https://pay.lowify.com.br/checkout?product_id=LjGA4s",
         },
         {
-          name: "Premium",
-          price: "R$39,90",
-          period: "/mês",
-          description: "Para profissionais",
+          name: t("planPremiumName"),
+          price: "R$ 39,90",
+          period: t("perMonth"),
+          description: t("planPremiumDesc"),
           features: [
-            "Tudo do PRO",
-            "Plano alimentar personalizado",
-            "Integração com smartwatch",
-            "Consultas com nutricionista IA",
-            "API para integrações",
-            "Multi-perfil (família)",
+            t("planPremiumF1"),
+            t("planPremiumF2"),
+            t("planPremiumF3"),
+            t("planPremiumF4"),
+            t("planPremiumF5"),
+            t("planPremiumF6"),
           ],
-          ctaText: "Assinar Premium",
+          ctaText: t("planPremiumCta"),
           highlight: false,
           cardLink: "https://adsroi.com.br/checkout/9PmDwk?offer=offer-1776009383029",
           pixLink: "https://pay.lowify.com.br/go.php?offer=2sweh1d",
