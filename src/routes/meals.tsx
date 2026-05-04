@@ -19,6 +19,7 @@ interface Meal {
   total_carbs: number;
   total_fat: number;
   scanned_at: string;
+  image_url: string | null;
 }
 
 function MealsPage() {
@@ -46,6 +47,15 @@ function MealsPage() {
 
     fetchMeals();
   }, [user]);
+
+  const handleDelete = async (id: string) => {
+    const prev = meals;
+    setMeals((m) => m.filter((x) => x.id !== id));
+    const { error } = await supabase.from("meals").delete().eq("id", id);
+    if (error) {
+      setMeals(prev);
+    }
+  };
 
   // Group meals by day
   const grouped = meals.reduce<Record<string, Meal[]>>((acc, meal) => {
@@ -100,6 +110,8 @@ function MealsPage() {
                     protein={Number(meal.total_protein)}
                     carbs={Number(meal.total_carbs)}
                     fat={Number(meal.total_fat)}
+                    imageUrl={meal.image_url || undefined}
+                    onDelete={() => handleDelete(meal.id)}
                   />
                 ))}
               </div>

@@ -107,6 +107,13 @@ function HomePage() {
       });
   }, [user]);
 
+  const handleDeleteMeal = async (id: string) => {
+    const prev = meals;
+    setMeals((m) => m.filter((x) => x.id !== id));
+    const { error } = await supabase.from("meals").delete().eq("id", id);
+    if (error) setMeals(prev);
+  };
+
   // Filter meals by selected date
   const filteredMeals = useMemo(() => {
     const targetDate = getDateForFilter(filter, filter === "custom" ? new Date(customDate + "T12:00:00") : undefined);
@@ -274,6 +281,7 @@ function HomePage() {
                   carbs={Number(meal.total_carbs)}
                   fat={Number(meal.total_fat)}
                   imageUrl={meal.image_url || undefined}
+                  onDelete={() => handleDeleteMeal(meal.id)}
                 />
               ))
             )}
