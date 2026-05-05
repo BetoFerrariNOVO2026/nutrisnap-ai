@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { CalorieRing } from "@/components/CalorieRing";
 import { MacroCard } from "@/components/MacroCard";
 import { MealCard } from "@/components/MealCard";
-import { Bell, Flame, Sun, Moon, ChevronDown, Calendar, ChefHat, Sparkles } from "lucide-react";
+import { Bell, Flame, Sun, Moon, ChevronDown, Calendar as CalendarIcon, ChefHat, Sparkles } from "lucide-react";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { useI18n } from "@/lib/i18n";
 import { useTheme } from "@/hooks/useTheme";
@@ -10,8 +10,11 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useState, useEffect, useMemo } from "react";
 import { format, subDays, startOfDay, endOfDay, startOfWeek, endOfWeek } from "date-fns";
-import { ptBR } from "date-fns/locale";
+import { ptBR, enUS, es as esLocale } from "date-fns/locale";
 import { Link } from "@tanstack/react-router";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Calendar } from "@/components/ui/calendar";
+import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/home")({
   component: HomePage,
