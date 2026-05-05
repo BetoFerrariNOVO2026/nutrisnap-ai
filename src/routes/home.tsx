@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { CalorieRing } from "@/components/CalorieRing";
 import { MacroCard } from "@/components/MacroCard";
 import { MealCard } from "@/components/MealCard";
-import { Bell, Flame, Sun, Moon, ChevronDown, Calendar, ChefHat, Sparkles } from "lucide-react";
+import { Bell, Flame, Sun, Moon, ChevronDown, Calendar as CalendarIcon, ChefHat, Sparkles } from "lucide-react";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { useI18n } from "@/lib/i18n";
 import { useTheme } from "@/hooks/useTheme";
@@ -10,8 +10,11 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useState, useEffect, useMemo } from "react";
 import { format, subDays, startOfDay, endOfDay, startOfWeek, endOfWeek } from "date-fns";
-import { ptBR } from "date-fns/locale";
+import { ptBR, enUS, es as esLocale } from "date-fns/locale";
 import { Link } from "@tanstack/react-router";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Calendar } from "@/components/ui/calendar";
+import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/home")({
   component: HomePage,
@@ -35,14 +38,14 @@ interface Profile {
 
 type DateFilter = "hoje" | "ontem" | "seg" | "ter" | "qua" | "qui" | "sex" | "sab" | "dom" | "custom";
 
-const weekDayLabels: { key: DateFilter; label: string }[] = [
-  { key: "dom", label: "Dom" },
-  { key: "seg", label: "Seg" },
-  { key: "ter", label: "Ter" },
-  { key: "qua", label: "Qua" },
-  { key: "qui", label: "Qui" },
-  { key: "sex", label: "Sex" },
-  { key: "sab", label: "Sáb" },
+const weekDayKeys: { key: DateFilter; tKey: "weekSun" | "weekMon" | "weekTue" | "weekWed" | "weekThu" | "weekFri" | "weekSat" }[] = [
+  { key: "dom", tKey: "weekSun" },
+  { key: "seg", tKey: "weekMon" },
+  { key: "ter", tKey: "weekTue" },
+  { key: "qua", tKey: "weekWed" },
+  { key: "qui", tKey: "weekThu" },
+  { key: "sex", tKey: "weekFri" },
+  { key: "sab", tKey: "weekSat" },
 ];
 
 function getDateForFilter(filter: DateFilter, customDate?: Date): Date {
@@ -64,12 +67,14 @@ function getDateForFilter(filter: DateFilter, customDate?: Date): Date {
 function HomePage() {
   const { theme, toggleTheme } = useTheme();
   const { user } = useAuth();
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
+  const dateLocale = lang === "pt" ? ptBR : lang === "es" ? esLocale : enUS;
   const [meals, setMeals] = useState<Meal[]>([]);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [filter, setFilter] = useState<DateFilter>("hoje");
-  const [customDate, setCustomDate] = useState<string>(format(new Date(), "yyyy-MM-dd"));
+  const [customDate, setCustomDate] = useState<Date>(new Date());
   const [filterOpen, setFilterOpen] = useState(false);
+  const [calendarOpen, setCalendarOpen] = useState(false);
   const [loading, setLoading] = useState(true);
 
   // Fetch profile
@@ -116,7 +121,7 @@ function HomePage() {
 
   // Filter meals by selected date
   const filteredMeals = useMemo(() => {
-    const targetDate = getDateForFilter(filter, filter === "custom" ? new Date(customDate + "T12:00:00") : undefined);
+    const targetDate = getDateForFilter(filter, filter === "custom" ? customDate : undefined);
     const dayStart = startOfDay(targetDate);
     const dayEnd = endOfDay(targetDate);
     return meals.filter((m) => {
@@ -141,16 +146,15 @@ function HomePage() {
   const goal = profile?.daily_calorie_goal || 2000;
 
   const filterLabel = filter === "custom"
-    ? format(new Date(customDate + "T12:00:00"), "dd/MM/yyyy")
-    : filter === "hoje" ? "Hoje"
-    : filter === "ontem" ? "Ontem"
-    : weekDayLabels.find(w => w.key === filter)?.label || filter;
+    ? format(customDate, "dd/MM/yyyy", { locale: dateLocale })
+    : filter === "hoje" ? t("filterToday")
+    : filter === "ontem" ? t("filterYesterday")
+    : t(weekDayKeys.find(w => w.key === filter)!.tKey);
 
   const allFilters: { key: DateFilter; label: string }[] = [
-    { key: "hoje", label: "Hoje" },
-    { key: "ontem", label: "Ontem" },
-    ...weekDayLabels,
-    { key: "custom", label: "📅 Personalizado" },
+    { key: "hoje", label: t("filterToday") },
+    { key: "ontem", label: t("filterYesterday") },
+    ...weekDayKeys.map((w) => ({ key: w.key, label: t(w.tKey) })),
   ];
 
   return (
@@ -161,7 +165,7 @@ function HomePage() {
             <div className="flex h-8 w-8 items-center justify-center rounded-lg gradient-orange">
               <Flame className="h-4 w-4 text-primary-foreground" />
             </div>
-            <h1 className="text-lg font-bold text-foreground font-display"><h1 className="text-lg font-bold text-foreground font-display">CaloriaX AI</h1></h1>
+            <h1 className="text-lg font-bold text-foreground font-display">CaloriaX AI</h1>
           </div>
         </div>
         <div className="flex items-center gap-2">
@@ -183,7 +187,7 @@ function HomePage() {
             className="w-full flex items-center justify-between rounded-xl bg-nutrisnap-surface border border-border px-4 py-3"
           >
             <div className="flex items-center gap-2">
-              <Calendar className="h-4 w-4 text-primary" />
+              <CalendarIcon className="h-4 w-4 text-primary" />
               <span className="text-sm font-semibold text-foreground">{filterLabel}</span>
             </div>
             <ChevronDown className={`h-4 w-4 text-muted-foreground transition-transform ${filterOpen ? "rotate-180" : ""}`} />
@@ -195,35 +199,53 @@ function HomePage() {
                 <button
                   key={f.key}
                   onClick={() => {
-                    if (f.key !== "custom") {
-                      setFilter(f.key);
-                      setFilterOpen(false);
-                    } else {
-                      setFilter("custom");
-                    }
+                    setFilter(f.key);
+                    setFilterOpen(false);
                   }}
-                  className={`w-full text-left rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
+                  className={cn(
+                    "w-full text-left rounded-lg px-3 py-2 text-sm font-medium transition-colors",
                     filter === f.key
                       ? "bg-primary text-primary-foreground"
                       : "text-foreground hover:bg-secondary"
-                  }`}
+                  )}
                 >
                   {f.label}
                 </button>
               ))}
-              {filter === "custom" && (
-                <div className="pt-2 border-t border-border mt-2">
-                  <input
-                    type="date"
-                    value={customDate}
-                    onChange={(e) => {
-                      setCustomDate(e.target.value);
-                      setFilterOpen(false);
+              <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
+                <PopoverTrigger asChild>
+                  <button
+                    className={cn(
+                      "w-full text-left rounded-lg px-3 py-2 text-sm font-medium transition-colors flex items-center gap-2",
+                      filter === "custom"
+                        ? "bg-primary text-primary-foreground"
+                        : "text-foreground hover:bg-secondary"
+                    )}
+                  >
+                    <CalendarIcon className="h-4 w-4" />
+                    {filter === "custom"
+                      ? format(customDate, "dd/MM/yyyy", { locale: dateLocale })
+                      : t("filterCustom")}
+                  </button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <Calendar
+                    mode="single"
+                    locale={dateLocale}
+                    selected={customDate}
+                    onSelect={(d) => {
+                      if (d) {
+                        setCustomDate(d);
+                        setFilter("custom");
+                        setCalendarOpen(false);
+                        setFilterOpen(false);
+                      }
                     }}
-                    className="w-full rounded-lg bg-secondary border border-border px-3 py-2 text-sm text-foreground"
+                    initialFocus
+                    className={cn("p-3 pointer-events-auto")}
                   />
-                </div>
-              )}
+                </PopoverContent>
+              </Popover>
             </div>
           )}
         </div>
@@ -257,19 +279,19 @@ function HomePage() {
         </Link>
 
         <div className="mt-6">
-          <h2 className="text-sm font-semibold text-foreground mb-3">Refeições recentes</h2>
+          <h2 className="text-sm font-semibold text-foreground mb-3">{t("recentMeals")}</h2>
           <div className="space-y-3">
             {!user ? (
               <div className="text-center py-6">
-                <p className="text-sm text-muted-foreground mb-2">Faça login para ver seus dados</p>
-                <Link to="/login" className="text-sm font-semibold text-primary">Entrar →</Link>
+                <p className="text-sm text-muted-foreground mb-2">{t("loginToSee")}</p>
+                <Link to="/login" className="text-sm font-semibold text-primary">{t("login")} →</Link>
               </div>
             ) : loading ? (
               <div className="flex items-center justify-center py-6">
                 <div className="h-8 w-8 rounded-full border-4 border-primary border-t-transparent animate-spin" />
               </div>
             ) : filteredMeals.length === 0 ? (
-              <p className="text-center text-sm text-muted-foreground py-6">Nenhuma refeição registrada neste dia</p>
+              <p className="text-center text-sm text-muted-foreground py-6">{t("noMealsDay")}</p>
             ) : (
               filteredMeals.map((meal) => (
                 <MealCard

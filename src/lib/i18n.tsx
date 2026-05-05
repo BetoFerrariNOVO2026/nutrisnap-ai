@@ -84,6 +84,21 @@ const dict: Dict = {
   planPremiumF4: { pt: "Consultas com nutricionista IA", en: "AI nutritionist consultations", es: "Consultas con nutricionista IA" },
   planPremiumF5: { pt: "API para integrações", en: "API for integrations", es: "API para integraciones" },
   planPremiumF6: { pt: "Multi-perfil (família)", en: "Multi-profile (family)", es: "Multi-perfil (familia)" },
+  // Date filter
+  filterToday: { pt: "Hoje", en: "Today", es: "Hoy" },
+  filterYesterday: { pt: "Ontem", en: "Yesterday", es: "Ayer" },
+  filterCustom: { pt: "Personalizado", en: "Custom", es: "Personalizado" },
+  weekSun: { pt: "Dom", en: "Sun", es: "Dom" },
+  weekMon: { pt: "Seg", en: "Mon", es: "Lun" },
+  weekTue: { pt: "Ter", en: "Tue", es: "Mar" },
+  weekWed: { pt: "Qua", en: "Wed", es: "Mié" },
+  weekThu: { pt: "Qui", en: "Thu", es: "Jue" },
+  weekFri: { pt: "Sex", en: "Fri", es: "Vie" },
+  weekSat: { pt: "Sáb", en: "Sat", es: "Sáb" },
+  recentMeals: { pt: "Refeições recentes", en: "Recent meals", es: "Comidas recientes" },
+  loginToSee: { pt: "Faça login para ver seus dados", en: "Sign in to see your data", es: "Inicia sesión para ver tus datos" },
+  noMealsDay: { pt: "Nenhuma refeição registrada neste dia", en: "No meals recorded on this day", es: "Sin comidas registradas este día" },
+  pickDate: { pt: "Escolher data", en: "Pick a date", es: "Elegir fecha" },
 };
 
 interface I18nContextValue {
