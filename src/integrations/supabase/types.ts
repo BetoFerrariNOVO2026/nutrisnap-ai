@@ -136,6 +136,84 @@ export type Database = {
         }
         Relationships: []
       }
+      plan_settings: {
+        Row: {
+          badge: string | null
+          card_link: string | null
+          created_at: string
+          cta_en: string
+          cta_es: string
+          cta_pt: string
+          desc_en: string
+          desc_es: string
+          desc_pt: string
+          features_en: string[]
+          features_es: string[]
+          features_pt: string[]
+          highlight: boolean
+          id: string
+          name_en: string
+          name_es: string
+          name_pt: string
+          pix_link: string | null
+          plan_key: string
+          price_brl: string
+          price_usd: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          badge?: string | null
+          card_link?: string | null
+          created_at?: string
+          cta_en?: string
+          cta_es?: string
+          cta_pt?: string
+          desc_en?: string
+          desc_es?: string
+          desc_pt?: string
+          features_en?: string[]
+          features_es?: string[]
+          features_pt?: string[]
+          highlight?: boolean
+          id?: string
+          name_en?: string
+          name_es?: string
+          name_pt?: string
+          pix_link?: string | null
+          plan_key: string
+          price_brl?: string
+          price_usd?: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          badge?: string | null
+          card_link?: string | null
+          created_at?: string
+          cta_en?: string
+          cta_es?: string
+          cta_pt?: string
+          desc_en?: string
+          desc_es?: string
+          desc_pt?: string
+          features_en?: string[]
+          features_es?: string[]
+          features_pt?: string[]
+          highlight?: boolean
+          id?: string
+          name_en?: string
+          name_es?: string
+          name_pt?: string
+          pix_link?: string | null
+          plan_key?: string
+          price_brl?: string
+          price_usd?: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null

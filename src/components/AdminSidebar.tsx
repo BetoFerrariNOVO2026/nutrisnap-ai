@@ -1,10 +1,11 @@
 import { Link, useLocation } from "@tanstack/react-router";
-import { Users, CreditCard, LayoutDashboard, ArrowLeft, Webhook, Moon, Sun } from "lucide-react";
+import { Users, CreditCard, LayoutDashboard, ArrowLeft, Webhook, Moon, Sun, Crown } from "lucide-react";
 import { useTheme } from "@/hooks/useTheme";
 
 const adminLinks = [
   { to: "/admin", icon: LayoutDashboard, label: "Dashboard" },
   { to: "/admin/users", icon: Users, label: "Usuários" },
+  { to: "/admin/plans", icon: Crown, label: "Planos" },
   { to: "/admin/webhooks", icon: Webhook, label: "Webhooks" },
 ];
 
