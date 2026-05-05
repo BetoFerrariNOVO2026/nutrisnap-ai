@@ -121,7 +121,7 @@ function HomePage() {
 
   // Filter meals by selected date
   const filteredMeals = useMemo(() => {
-    const targetDate = getDateForFilter(filter, filter === "custom" ? new Date(customDate + "T12:00:00") : undefined);
+    const targetDate = getDateForFilter(filter, filter === "custom" ? customDate : undefined);
     const dayStart = startOfDay(targetDate);
     const dayEnd = endOfDay(targetDate);
     return meals.filter((m) => {
