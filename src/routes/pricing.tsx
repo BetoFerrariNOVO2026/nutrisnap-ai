@@ -6,155 +6,65 @@ import { PWAInstallButton } from "@/components/PWAInstallButton";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { loadFacebookPixel, FB_PIXEL_ID } from "@/lib/fbPixel";
 import { useI18n } from "@/lib/i18n";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/pricing")({
   component: PricingPage,
 });
 
-function useIsInternational() {
-  const [isIntl, setIsIntl] = useState(false);
-  useEffect(() => {
-    try {
-      const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
-      const lang = navigator.language;
-      // If not Brazilian timezone/locale, show international pricing
-      if (!tz.startsWith("America/Sao_Paulo") && !tz.startsWith("America/Fortaleza") && !tz.startsWith("America/Bahia") && !tz.startsWith("America/Recife") && !tz.startsWith("America/Belem") && !tz.startsWith("America/Manaus") && !tz.startsWith("America/Cuiaba") && !lang.startsWith("pt")) {
-        setIsIntl(true);
-      }
-    } catch {}
-  }, []);
-  return isIntl;
+interface PlanRow {
+  id: string;
+  plan_key: string;
+  sort_order: number;
+  highlight: boolean;
+  badge: string | null;
+  card_link: string | null;
+  pix_link: string | null;
+  price_brl: string;
+  price_usd: string;
+  name_pt: string; name_en: string; name_es: string;
+  desc_pt: string; desc_en: string; desc_es: string;
+  cta_pt: string; cta_en: string; cta_es: string;
+  features_pt: string[]; features_en: string[]; features_es: string[];
 }
 
 function PricingPage() {
-  const isIntl = useIsInternational();
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
+  const [rows, setRows] = useState<PlanRow[]>([]);
 
   useEffect(() => {
     loadFacebookPixel(FB_PIXEL_ID);
+    supabase
+      .from("plan_settings" as any)
+      .select("*")
+      .order("sort_order", { ascending: true })
+      .then(({ data }) => {
+        if (data) setRows(data as any as PlanRow[]);
+      });
   }, []);
 
-  const plans = isIntl
-    ? [
-        {
-          name: "Free",
-          price: "$0",
-          period: "/mo",
-          description: "Perfect to try it out",
-          features: [
-            "1 scan per day",
-            "7-day history",
-            "Basic macro analysis",
-            "Simple dashboard",
-          ],
-          ctaText: "Start free",
-          highlight: false,
-          cardLink: null,
-          pixLink: null,
-        },
-        {
-          name: "PRO",
-          price: "$1.99",
-          period: "/mo",
-          description: "For those who are serious",
-          features: [
-            "Unlimited scans",
-            "Full history",
-            "Advanced AI analysis",
-            "Personalized suggestions",
-            "Complete dashboard",
-            "Export reports",
-            "Priority support",
-          ],
-          ctaText: "Subscribe PRO",
-          highlight: true,
-          badge: "MOST POPULAR",
-          cardLink: "https://adsroi.com.br/checkout/9PmDwk",
-          pixLink: null,
-        },
-        {
-          name: "Premium",
-          price: "$3.40",
-          period: "/mo",
-          description: "For professionals",
-          features: [
-            "Everything in PRO",
-            "Personalized meal plan",
-            "Smartwatch integration",
-            "AI nutritionist consultations",
-            "API for integrations",
-            "Multi-profile (family)",
-          ],
-          ctaText: "Subscribe Premium",
-          highlight: false,
-          cardLink: "https://adsroi.com.br/checkout/9PmDwk?offer=offer-1776009383029",
-          pixLink: null,
-        },
-      ]
-    : [
-        {
-          name: t("planStartName"),
-          price: "R$ 9,90",
-          period: t("perMonth"),
-          description: t("planStartDesc"),
-          features: [
-            t("planStartF1"),
-            t("planStartF2"),
-            t("planStartF3"),
-            t("planStartF4"),
-            t("planStartF5"),
-          ],
-          ctaText: t("planStartCta"),
-          highlight: false,
-          cardLink: null,
-          pixLink: "https://pay.lowify.com.br/go.php?offer=2jbo01y",
-        },
-        {
-          name: t("planProName"),
-          price: "R$ 19,90",
-          period: t("perMonth"),
-          description: t("planProDesc"),
-          features: [
-            t("planProF1"),
-            t("planProF2"),
-            t("planProF3"),
-            t("planProF4"),
-            t("planProF5"),
-            t("planProF6"),
-            t("planProF7"),
-          ],
-          ctaText: t("planProCta"),
-          highlight: true,
-          badge: t("mostPopular"),
-          cardLink: "https://adsroi.com.br/checkout/9PmDwk",
-          pixLink: "https://pay.lowify.com.br/checkout?product_id=LjGA4s",
-        },
-        {
-          name: t("planPremiumName"),
-          price: "R$ 39,90",
-          period: t("perMonth"),
-          description: t("planPremiumDesc"),
-          features: [
-            t("planPremiumF1"),
-            t("planPremiumF2"),
-            t("planPremiumF3"),
-            t("planPremiumF4"),
-            t("planPremiumF5"),
-            t("planPremiumF6"),
-          ],
-          ctaText: t("planPremiumCta"),
-          highlight: false,
-          cardLink: "https://adsroi.com.br/checkout/9PmDwk?offer=offer-1776009383029",
-          pixLink: "https://pay.lowify.com.br/go.php?offer=2sweh1d",
-        },
-      ];
+  // Currency by language: pt -> R$, others -> US$
+  const useUsd = lang !== "pt";
+
+  const plans = rows.map((r) => ({
+    name: lang === "pt" ? r.name_pt : lang === "en" ? r.name_en : r.name_es,
+    description: lang === "pt" ? r.desc_pt : lang === "en" ? r.desc_en : r.desc_es,
+    ctaText: lang === "pt" ? r.cta_pt : lang === "en" ? r.cta_en : r.cta_es,
+    features: lang === "pt" ? r.features_pt : lang === "en" ? r.features_en : r.features_es,
+    price: useUsd ? r.price_usd : r.price_brl,
+    period: t("perMonth"),
+    highlight: r.highlight,
+    badge: r.badge,
+    cardLink: r.card_link,
+    pixLink: useUsd ? null : r.pix_link, // PIX only for Brazil
+  }));
 
   return (
     <div className="min-h-screen bg-background pb-10">
       <header className="px-5 pt-6 pb-4 flex items-center justify-between max-w-lg mx-auto">
         <Link to="/sales" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
           <ArrowLeft className="h-4 w-4" />
-          {isIntl ? "Back" : "Voltar"}
+          {t("back")}
         </Link>
         <div className="flex items-center gap-2">
           <LanguageSwitcher />
@@ -166,13 +76,9 @@ function PricingPage() {
         <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-2 mb-3">
             <Crown className="h-5 w-5 text-primary" />
-            <h1 className="text-xl font-bold text-foreground font-display">
-              {isIntl ? "Choose your plan" : "Escolha seu plano"}
-            </h1>
+            <h1 className="text-xl font-bold text-foreground font-display">{t("choosePlan")}</h1>
           </div>
-          <p className="text-xs text-muted-foreground">
-            {isIntl ? "Cancel anytime. No commitment." : "Cancele a qualquer momento. Sem compromisso."}
-          </p>
+          <p className="text-xs text-muted-foreground">{t("cancelAnytime")}</p>
         </div>
 
         <div className="space-y-4">
@@ -221,25 +127,27 @@ function PricingPage() {
                 ))}
               </div>
 
-              {plan.cardLink ? (
+              {plan.cardLink || plan.pixLink ? (
                 <div className="space-y-2">
-                  <a href={plan.cardLink} target="_blank" rel="noopener noreferrer" className="block">
-                    <Button
-                      className={`w-full rounded-xl ${
-                        plan.highlight
-                          ? "bg-primary-foreground text-primary hover:bg-primary-foreground/90"
-                          : ""
-                      }`}
-                      variant={plan.highlight ? "default" : "outline"}
-                    >
-                      {plan.highlight && <Star className="h-4 w-4 mr-1" />}
-                      💳 {plan.ctaText}
-                    </Button>
-                  </a>
+                  {plan.cardLink && (
+                    <a href={plan.cardLink} target="_blank" rel="noopener noreferrer" className="block">
+                      <Button
+                        className={`w-full rounded-xl ${
+                          plan.highlight
+                            ? "bg-primary-foreground text-primary hover:bg-primary-foreground/90"
+                            : ""
+                        }`}
+                        variant={plan.highlight ? "default" : "outline"}
+                      >
+                        {plan.highlight && <Star className="h-4 w-4 mr-1" />}
+                        💳 {plan.ctaText}
+                      </Button>
+                    </a>
+                  )}
                   {plan.pixLink && (
                     <a href={plan.pixLink} target="_blank" rel="noopener noreferrer" className="block">
                       <Button variant="outline" className="w-full rounded-xl text-xs">
-                        <span className="mr-1">📱</span> {isIntl ? "Pay with PIX" : "Pagar com PIX"}
+                        <span className="mr-1">📱</span> {t("payPix")}
                       </Button>
                     </a>
                   )}
@@ -258,15 +166,9 @@ function PricingPage() {
         <div className="mt-8 rounded-2xl bg-nutrisnap-surface p-4 border border-border">
           <div className="flex items-center gap-2 mb-2">
             <Zap className="h-4 w-4 text-primary" />
-            <span className="text-sm font-semibold text-foreground">
-              {isIntl ? "7-day guarantee" : "Garantia de 7 dias"}
-            </span>
+            <span className="text-sm font-semibold text-foreground">{t("guarantee")}</span>
           </div>
-          <p className="text-xs text-muted-foreground">
-            {isIntl
-              ? "If you don't like it, we'll refund 100% of the amount. No questions asked."
-              : "Se não gostar, devolvemos 100% do valor. Sem perguntas."}
-          </p>
+          <p className="text-xs text-muted-foreground">{t("guaranteeDesc")}</p>
         </div>
       </div>
     </div>
