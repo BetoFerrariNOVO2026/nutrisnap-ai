@@ -279,19 +279,19 @@ function HomePage() {
         </Link>
 
         <div className="mt-6">
-          <h2 className="text-sm font-semibold text-foreground mb-3">Refeições recentes</h2>
+          <h2 className="text-sm font-semibold text-foreground mb-3">{t("recentMeals")}</h2>
           <div className="space-y-3">
             {!user ? (
               <div className="text-center py-6">
-                <p className="text-sm text-muted-foreground mb-2">Faça login para ver seus dados</p>
-                <Link to="/login" className="text-sm font-semibold text-primary">Entrar →</Link>
+                <p className="text-sm text-muted-foreground mb-2">{t("loginToSee")}</p>
+                <Link to="/login" className="text-sm font-semibold text-primary">{t("login")} →</Link>
               </div>
             ) : loading ? (
               <div className="flex items-center justify-center py-6">
                 <div className="h-8 w-8 rounded-full border-4 border-primary border-t-transparent animate-spin" />
               </div>
             ) : filteredMeals.length === 0 ? (
-              <p className="text-center text-sm text-muted-foreground py-6">Nenhuma refeição registrada neste dia</p>
+              <p className="text-center text-sm text-muted-foreground py-6">{t("noMealsDay")}</p>
             ) : (
               filteredMeals.map((meal) => (
                 <MealCard
