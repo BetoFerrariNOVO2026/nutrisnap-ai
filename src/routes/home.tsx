@@ -67,12 +67,14 @@ function getDateForFilter(filter: DateFilter, customDate?: Date): Date {
 function HomePage() {
   const { theme, toggleTheme } = useTheme();
   const { user } = useAuth();
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
+  const dateLocale = lang === "pt" ? ptBR : lang === "es" ? esLocale : enUS;
   const [meals, setMeals] = useState<Meal[]>([]);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [filter, setFilter] = useState<DateFilter>("hoje");
-  const [customDate, setCustomDate] = useState<string>(format(new Date(), "yyyy-MM-dd"));
+  const [customDate, setCustomDate] = useState<Date>(new Date());
   const [filterOpen, setFilterOpen] = useState(false);
+  const [calendarOpen, setCalendarOpen] = useState(false);
   const [loading, setLoading] = useState(true);
 
   // Fetch profile
