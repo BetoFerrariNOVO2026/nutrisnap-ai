@@ -38,14 +38,14 @@ interface Profile {
 
 type DateFilter = "hoje" | "ontem" | "seg" | "ter" | "qua" | "qui" | "sex" | "sab" | "dom" | "custom";
 
-const weekDayLabels: { key: DateFilter; label: string }[] = [
-  { key: "dom", label: "Dom" },
-  { key: "seg", label: "Seg" },
-  { key: "ter", label: "Ter" },
-  { key: "qua", label: "Qua" },
-  { key: "qui", label: "Qui" },
-  { key: "sex", label: "Sex" },
-  { key: "sab", label: "Sáb" },
+const weekDayKeys: { key: DateFilter; tKey: "weekSun" | "weekMon" | "weekTue" | "weekWed" | "weekThu" | "weekFri" | "weekSat" }[] = [
+  { key: "dom", tKey: "weekSun" },
+  { key: "seg", tKey: "weekMon" },
+  { key: "ter", tKey: "weekTue" },
+  { key: "qua", tKey: "weekWed" },
+  { key: "qui", tKey: "weekThu" },
+  { key: "sex", tKey: "weekFri" },
+  { key: "sab", tKey: "weekSat" },
 ];
 
 function getDateForFilter(filter: DateFilter, customDate?: Date): Date {
