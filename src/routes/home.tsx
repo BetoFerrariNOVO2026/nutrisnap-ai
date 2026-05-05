@@ -146,16 +146,15 @@ function HomePage() {
   const goal = profile?.daily_calorie_goal || 2000;
 
   const filterLabel = filter === "custom"
-    ? format(new Date(customDate + "T12:00:00"), "dd/MM/yyyy")
-    : filter === "hoje" ? "Hoje"
-    : filter === "ontem" ? "Ontem"
-    : weekDayLabels.find(w => w.key === filter)?.label || filter;
+    ? format(customDate, "dd/MM/yyyy", { locale: dateLocale })
+    : filter === "hoje" ? t("filterToday")
+    : filter === "ontem" ? t("filterYesterday")
+    : t(weekDayKeys.find(w => w.key === filter)!.tKey);
 
   const allFilters: { key: DateFilter; label: string }[] = [
-    { key: "hoje", label: "Hoje" },
-    { key: "ontem", label: "Ontem" },
-    ...weekDayLabels,
-    { key: "custom", label: "📅 Personalizado" },
+    { key: "hoje", label: t("filterToday") },
+    { key: "ontem", label: t("filterYesterday") },
+    ...weekDayKeys.map((w) => ({ key: w.key, label: t(w.tKey) })),
   ];
 
   return (
@@ -166,7 +165,7 @@ function HomePage() {
             <div className="flex h-8 w-8 items-center justify-center rounded-lg gradient-orange">
               <Flame className="h-4 w-4 text-primary-foreground" />
             </div>
-            <h1 className="text-lg font-bold text-foreground font-display"><h1 className="text-lg font-bold text-foreground font-display">CaloriaX AI</h1></h1>
+            <h1 className="text-lg font-bold text-foreground font-display">CaloriaX AI</h1>
           </div>
         </div>
         <div className="flex items-center gap-2">
@@ -188,7 +187,7 @@ function HomePage() {
             className="w-full flex items-center justify-between rounded-xl bg-nutrisnap-surface border border-border px-4 py-3"
           >
             <div className="flex items-center gap-2">
-              <Calendar className="h-4 w-4 text-primary" />
+              <CalendarIcon className="h-4 w-4 text-primary" />
               <span className="text-sm font-semibold text-foreground">{filterLabel}</span>
             </div>
             <ChevronDown className={`h-4 w-4 text-muted-foreground transition-transform ${filterOpen ? "rotate-180" : ""}`} />
@@ -200,35 +199,53 @@ function HomePage() {
                 <button
                   key={f.key}
                   onClick={() => {
-                    if (f.key !== "custom") {
-                      setFilter(f.key);
-                      setFilterOpen(false);
-                    } else {
-                      setFilter("custom");
-                    }
+                    setFilter(f.key);
+                    setFilterOpen(false);
                   }}
-                  className={`w-full text-left rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
+                  className={cn(
+                    "w-full text-left rounded-lg px-3 py-2 text-sm font-medium transition-colors",
                     filter === f.key
                       ? "bg-primary text-primary-foreground"
                       : "text-foreground hover:bg-secondary"
-                  }`}
+                  )}
                 >
                   {f.label}
                 </button>
               ))}
-              {filter === "custom" && (
-                <div className="pt-2 border-t border-border mt-2">
-                  <input
-                    type="date"
-                    value={customDate}
-                    onChange={(e) => {
-                      setCustomDate(e.target.value);
-                      setFilterOpen(false);
+              <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
+                <PopoverTrigger asChild>
+                  <button
+                    className={cn(
+                      "w-full text-left rounded-lg px-3 py-2 text-sm font-medium transition-colors flex items-center gap-2",
+                      filter === "custom"
+                        ? "bg-primary text-primary-foreground"
+                        : "text-foreground hover:bg-secondary"
+                    )}
+                  >
+                    <CalendarIcon className="h-4 w-4" />
+                    {filter === "custom"
+                      ? format(customDate, "dd/MM/yyyy", { locale: dateLocale })
+                      : t("filterCustom")}
+                  </button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <Calendar
+                    mode="single"
+                    locale={dateLocale}
+                    selected={customDate}
+                    onSelect={(d) => {
+                      if (d) {
+                        setCustomDate(d);
+                        setFilter("custom");
+                        setCalendarOpen(false);
+                        setFilterOpen(false);
+                      }
                     }}
-                    className="w-full rounded-lg bg-secondary border border-border px-3 py-2 text-sm text-foreground"
+                    initialFocus
+                    className={cn("p-3 pointer-events-auto")}
                   />
-                </div>
-              )}
+                </PopoverContent>
+              </Popover>
             </div>
           )}
         </div>
