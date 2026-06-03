@@ -146,6 +146,7 @@ function AdminUsersPage() {
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="free">Gratuito</SelectItem>
+                        <SelectItem value="start">Start</SelectItem>
                         <SelectItem value="pro">PRO</SelectItem>
                         <SelectItem value="premium">Premium</SelectItem>
                       </SelectContent>
