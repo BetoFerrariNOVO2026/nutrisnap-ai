@@ -75,21 +75,33 @@ function SettingsPage() {
       </header>
 
       <div className="px-5 space-y-6">
-        {/* PRO Banner */}
-        <Link to="/pricing">
+        {/* PRO Banner — apenas se não for plano pago */}
+        {!isPaid ? (
+          <Link to="/pricing">
+            <div className="rounded-2xl gradient-orange p-4 relative overflow-hidden">
+              <div className="relative z-10">
+                <div className="flex items-center gap-2 mb-1">
+                  <Crown className="h-5 w-5 text-primary-foreground" />
+                  <h2 className="text-sm font-bold text-primary-foreground">CaloriaX PRO</h2>
+                </div>
+                <p className="text-xs text-primary-foreground/80">Scans ilimitados, análise avançada e sugestões personalizadas</p>
+                <span className="mt-3 inline-block rounded-full bg-primary-foreground px-4 py-1.5 text-xs font-bold text-primary">
+                  Assinar agora
+                </span>
+              </div>
+            </div>
+          </Link>
+        ) : (
           <div className="rounded-2xl gradient-orange p-4 relative overflow-hidden">
             <div className="relative z-10">
               <div className="flex items-center gap-2 mb-1">
                 <Crown className="h-5 w-5 text-primary-foreground" />
-                <h2 className="text-sm font-bold text-primary-foreground">CaloriaX PRO</h2>
+                <h2 className="text-sm font-bold text-primary-foreground">Plano {planLabel} ativo</h2>
               </div>
-              <p className="text-xs text-primary-foreground/80">Scans ilimitados, análise avançada e sugestões personalizadas</p>
-              <span className="mt-3 inline-block rounded-full bg-primary-foreground px-4 py-1.5 text-xs font-bold text-primary">
-                Assinar agora
-              </span>
+              <p className="text-xs text-primary-foreground/80">Você tem acesso completo a todos os recursos do CaloriaX.</p>
             </div>
           </div>
-        </Link>
+        )}
 
         {!user && (
           <Link to="/login">
