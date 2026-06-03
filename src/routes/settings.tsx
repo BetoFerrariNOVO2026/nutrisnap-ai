@@ -56,7 +56,7 @@ function SettingsPage() {
     {
       title: "Conta",
       items: [
-        { icon: Crown, label: "Plano", value: "Gratuito", action: () => navigate({ to: "/pricing" }) },
+        { icon: Crown, label: "Plano", value: planLabel, action: () => navigate({ to: "/pricing" }) },
         ...(isAdmin
           ? [{ icon: Shield, label: "Área Admin", value: "", action: () => navigate({ to: "/admin" }) }]
           : []),
