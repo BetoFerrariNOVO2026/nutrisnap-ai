@@ -15,6 +15,8 @@ function SettingsPage() {
   const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
   const { isAdmin } = useAdmin();
+  const { plan, isPaid } = useSubscription();
+  const planLabel = plan === "premium" ? "Premium" : plan === "pro" ? "Pro" : plan === "start" ? "Start" : "Gratuito";
 
   const profile = {
     name: user?.email || "Visitante",
