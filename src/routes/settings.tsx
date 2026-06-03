@@ -57,6 +57,7 @@ function SettingsPage() {
       title: "Conta",
       items: [
         { icon: Crown, label: "Plano", value: planLabel, action: () => navigate({ to: "/pricing" }) },
+        { icon: CreditCard, label: "Gerenciar assinatura", value: "", action: () => navigate({ to: "/manage-subscription" }) },
         ...(isAdmin
           ? [{ icon: Shield, label: "Área Admin", value: "", action: () => navigate({ to: "/admin" }) }]
           : []),
