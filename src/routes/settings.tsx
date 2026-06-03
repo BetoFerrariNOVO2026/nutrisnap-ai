@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { User, Target, Scale, Ruler, Crown, ChevronRight, LogOut, Moon, Sun, Bell, HelpCircle, Shield } from "lucide-react";
+import { User, Target, Scale, Ruler, Crown, ChevronRight, LogOut, Moon, Sun, Bell, HelpCircle, Shield, CreditCard } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useTheme } from "@/hooks/useTheme";
 import { useNavigate } from "@tanstack/react-router";
