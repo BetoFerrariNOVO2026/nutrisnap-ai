@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { User, Target, Scale, Ruler, Crown, ChevronRight, LogOut, Moon, Sun, Bell, HelpCircle, Shield } from "lucide-react";
+import { User, Target, Scale, Ruler, Crown, ChevronRight, LogOut, Moon, Sun, Bell, HelpCircle, Shield, CreditCard } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useTheme } from "@/hooks/useTheme";
 import { useNavigate } from "@tanstack/react-router";
@@ -57,6 +57,7 @@ function SettingsPage() {
       title: "Conta",
       items: [
         { icon: Crown, label: "Plano", value: planLabel, action: () => navigate({ to: "/pricing" }) },
+        { icon: CreditCard, label: "Gerenciar assinatura", value: "", action: () => navigate({ to: "/manage-subscription" }) },
         ...(isAdmin
           ? [{ icon: Shield, label: "Área Admin", value: "", action: () => navigate({ to: "/admin" }) }]
           : []),

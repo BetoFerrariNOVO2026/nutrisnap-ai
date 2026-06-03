@@ -17,6 +17,7 @@ import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as NotificationsRouteImport } from './routes/notifications'
 import { Route as MealsRouteImport } from './routes/meals'
+import { Route as ManageSubscriptionRouteImport } from './routes/manage-subscription'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as HomeRouteImport } from './routes/home'
 import { Route as HelpRouteImport } from './routes/help'
@@ -68,6 +69,11 @@ const NotificationsRoute = NotificationsRouteImport.update({
 const MealsRoute = MealsRouteImport.update({
   id: '/meals',
   path: '/meals',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ManageSubscriptionRoute = ManageSubscriptionRouteImport.update({
+  id: '/manage-subscription',
+  path: '/manage-subscription',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -139,6 +145,7 @@ export interface FileRoutesByFullPath {
   '/help': typeof HelpRoute
   '/home': typeof HomeRoute
   '/login': typeof LoginRoute
+  '/manage-subscription': typeof ManageSubscriptionRoute
   '/meals': typeof MealsRoute
   '/notifications': typeof NotificationsRoute
   '/pricing': typeof PricingRoute
@@ -160,6 +167,7 @@ export interface FileRoutesByTo {
   '/help': typeof HelpRoute
   '/home': typeof HomeRoute
   '/login': typeof LoginRoute
+  '/manage-subscription': typeof ManageSubscriptionRoute
   '/meals': typeof MealsRoute
   '/notifications': typeof NotificationsRoute
   '/pricing': typeof PricingRoute
@@ -183,6 +191,7 @@ export interface FileRoutesById {
   '/help': typeof HelpRoute
   '/home': typeof HomeRoute
   '/login': typeof LoginRoute
+  '/manage-subscription': typeof ManageSubscriptionRoute
   '/meals': typeof MealsRoute
   '/notifications': typeof NotificationsRoute
   '/pricing': typeof PricingRoute
@@ -207,6 +216,7 @@ export interface FileRouteTypes {
     | '/help'
     | '/home'
     | '/login'
+    | '/manage-subscription'
     | '/meals'
     | '/notifications'
     | '/pricing'
@@ -228,6 +238,7 @@ export interface FileRouteTypes {
     | '/help'
     | '/home'
     | '/login'
+    | '/manage-subscription'
     | '/meals'
     | '/notifications'
     | '/pricing'
@@ -250,6 +261,7 @@ export interface FileRouteTypes {
     | '/help'
     | '/home'
     | '/login'
+    | '/manage-subscription'
     | '/meals'
     | '/notifications'
     | '/pricing'
@@ -273,6 +285,7 @@ export interface RootRouteChildren {
   HelpRoute: typeof HelpRoute
   HomeRoute: typeof HomeRoute
   LoginRoute: typeof LoginRoute
+  ManageSubscriptionRoute: typeof ManageSubscriptionRoute
   MealsRoute: typeof MealsRoute
   NotificationsRoute: typeof NotificationsRoute
   PricingRoute: typeof PricingRoute
@@ -341,6 +354,13 @@ declare module '@tanstack/react-router' {
       path: '/meals'
       fullPath: '/meals'
       preLoaderRoute: typeof MealsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/manage-subscription': {
+      id: '/manage-subscription'
+      path: '/manage-subscription'
+      fullPath: '/manage-subscription'
+      preLoaderRoute: typeof ManageSubscriptionRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -453,6 +473,7 @@ const rootRouteChildren: RootRouteChildren = {
   HelpRoute: HelpRoute,
   HomeRoute: HomeRoute,
   LoginRoute: LoginRoute,
+  ManageSubscriptionRoute: ManageSubscriptionRoute,
   MealsRoute: MealsRoute,
   NotificationsRoute: NotificationsRoute,
   PricingRoute: PricingRoute,
