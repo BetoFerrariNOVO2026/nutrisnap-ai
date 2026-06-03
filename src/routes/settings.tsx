@@ -4,6 +4,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useTheme } from "@/hooks/useTheme";
 import { useNavigate } from "@tanstack/react-router";
 import { useAdmin } from "@/hooks/useAdmin";
+import { useSubscription } from "@/hooks/useSubscription";
 
 export const Route = createFileRoute("/settings")({
   component: SettingsPage,
