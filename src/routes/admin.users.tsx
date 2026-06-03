@@ -68,6 +68,8 @@ function AdminUsersPage() {
 
   const planBadge = (plan: string) => {
     switch (plan) {
+      case "start":
+        return <Badge className="bg-primary/20 text-primary border-primary/30">Start</Badge>;
       case "pro":
         return <Badge className="bg-nutrisnap-green/20 text-nutrisnap-green border-nutrisnap-green/30">PRO</Badge>;
       case "premium":
