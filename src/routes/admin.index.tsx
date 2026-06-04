@@ -99,6 +99,7 @@ function AdminDashboard() {
   const stats = useMemo(() => ({
     total: filtered.length,
     free: filtered.filter((p) => p.subscription_plan === "free").length,
+    start: filtered.filter((p) => p.subscription_plan === "start").length,
     pro: filtered.filter((p) => p.subscription_plan === "pro").length,
     premium: filtered.filter((p) => p.subscription_plan === "premium").length,
   }), [filtered]);
@@ -138,7 +139,7 @@ function AdminDashboard() {
       if (p.subscription_plan === "free") return;
       const m = p.created_at?.slice(0, 7);
       if (!m) return;
-      const value = p.subscription_plan === "pro" ? 19.9 : 39.9;
+      const value = p.subscription_plan === "start" ? 9.9 : p.subscription_plan === "pro" ? 19.9 : 39.9;
       months[m] = (months[m] || 0) + value;
     });
     return Object.entries(months)
@@ -152,6 +153,7 @@ function AdminDashboard() {
   const cards = [
     { label: "Total de usuários", value: stats.total, icon: Users, color: "text-primary" },
     { label: "Plano Gratuito", value: stats.free, icon: Users, color: "text-muted-foreground" },
+    { label: "Plano Start", value: stats.start, icon: Crown, color: "text-primary" },
     { label: "Plano PRO", value: stats.pro, icon: Crown, color: "text-nutrisnap-green" },
     { label: "Plano Premium", value: stats.premium, icon: TrendingUp, color: "text-chart-1" },
   ];
@@ -216,7 +218,7 @@ function AdminDashboard() {
 
       <p className="text-xs text-muted-foreground sm:hidden">{rangeLabel}</p>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
         {cards.map((card) => {
           const Icon = card.icon;
           return (
