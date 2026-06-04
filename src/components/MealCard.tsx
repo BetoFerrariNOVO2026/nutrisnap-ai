@@ -1,4 +1,4 @@
-import { Flame, UtensilsCrossed, Trash2 } from "lucide-react";
+import { Flame, UtensilsCrossed, Trash2, Eye, Pencil } from "lucide-react";
 import { useState } from "react";
 import {
   AlertDialog,
@@ -21,6 +21,8 @@ interface MealCardProps {
   fat: number;
   imageUrl?: string;
   onDelete?: () => void | Promise<void>;
+  onView?: () => void;
+  onEdit?: () => void;
 }
 
 export function MealCard({ name, time, calories, protein, carbs, fat, imageUrl, onDelete }: MealCardProps) {
