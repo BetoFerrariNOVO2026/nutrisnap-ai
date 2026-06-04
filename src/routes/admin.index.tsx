@@ -99,6 +99,7 @@ function AdminDashboard() {
   const stats = useMemo(() => ({
     total: filtered.length,
     free: filtered.filter((p) => p.subscription_plan === "free").length,
+    start: filtered.filter((p) => p.subscription_plan === "start").length,
     pro: filtered.filter((p) => p.subscription_plan === "pro").length,
     premium: filtered.filter((p) => p.subscription_plan === "premium").length,
   }), [filtered]);
