@@ -50,8 +50,26 @@ export function MealCard({ name, time, calories, protein, carbs, fat, imageUrl, 
       <div className="flex-1 min-w-0">
         <div className="flex items-center justify-between gap-2">
           <h3 className="text-sm font-semibold text-foreground truncate">{name}</h3>
-          <div className="flex items-center gap-2 shrink-0">
-            <span className="text-xs text-muted-foreground">{time}</span>
+          <div className="flex items-center gap-1 shrink-0">
+            <span className="text-xs text-muted-foreground mr-1">{time}</span>
+            {onView && (
+              <button
+                aria-label="Ver detalhes"
+                onClick={onView}
+                className="flex h-7 w-7 items-center justify-center rounded-full text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors"
+              >
+                <Eye className="h-3.5 w-3.5" />
+              </button>
+            )}
+            {onEdit && (
+              <button
+                aria-label="Editar refeição"
+                onClick={onEdit}
+                className="flex h-7 w-7 items-center justify-center rounded-full text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors"
+              >
+                <Pencil className="h-3.5 w-3.5" />
+              </button>
+            )}
             {onDelete && (
               <AlertDialog>
                 <AlertDialogTrigger asChild>
