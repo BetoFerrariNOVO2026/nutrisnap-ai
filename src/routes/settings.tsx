@@ -5,6 +5,8 @@ import { useTheme } from "@/hooks/useTheme";
 import { useNavigate } from "@tanstack/react-router";
 import { useAdmin } from "@/hooks/useAdmin";
 import { useSubscription } from "@/hooks/useSubscription";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/settings")({
   component: SettingsPage,
@@ -18,12 +20,46 @@ function SettingsPage() {
   const { plan, isPaid } = useSubscription();
   const planLabel = plan === "premium" ? "Premium" : plan === "pro" ? "Pro" : plan === "start" ? "Start" : "Gratuito";
 
+  const [profileData, setProfileData] = useState<{
+    display_name: string | null;
+    goal: string | null;
+    weight: number | null;
+    height: number | null;
+  } | null>(null);
+
+  useEffect(() => {
+    if (!user) {
+      setProfileData(null);
+      return;
+    }
+    let cancelled = false;
+    supabase
+      .from("profiles")
+      .select("display_name, goal, weight, height")
+      .eq("user_id", user.id)
+      .maybeSingle()
+      .then(({ data }) => {
+        if (!cancelled) setProfileData((data as any) || null);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [user]);
+
+  const goalLabel =
+    profileData?.goal === "lose"
+      ? "Emagrecer"
+      : profileData?.goal === "gain"
+      ? "Ganhar massa"
+      : profileData?.goal === "maintain"
+      ? "Manter peso"
+      : "—";
+
   const profile = {
-    name: user?.email || "Visitante",
-    goal: "Emagrecer",
-    weight: 65,
-    height: 165,
-    dailyGoal: 2000,
+    name: profileData?.display_name || user?.email || "Visitante",
+    goal: goalLabel,
+    weight: profileData?.weight,
+    height: profileData?.height,
   };
 
   const handleLogout = async () => {
