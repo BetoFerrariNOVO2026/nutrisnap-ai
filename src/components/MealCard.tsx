@@ -25,7 +25,7 @@ interface MealCardProps {
   onEdit?: () => void;
 }
 
-export function MealCard({ name, time, calories, protein, carbs, fat, imageUrl, onDelete }: MealCardProps) {
+export function MealCard({ name, time, calories, protein, carbs, fat, imageUrl, onDelete, onView, onEdit }: MealCardProps) {
   const [imgError, setImgError] = useState(false);
   return (
     <div className="flex items-center gap-3 rounded-xl bg-nutrisnap-surface p-3 border border-border">
