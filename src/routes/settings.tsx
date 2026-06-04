@@ -73,8 +73,8 @@ function SettingsPage() {
       items: [
         { icon: User, label: "Dados pessoais", value: profile.name, action: () => navigate({ to: "/profile" }) },
         { icon: Target, label: "Objetivo", value: profile.goal, action: () => navigate({ to: "/profile" }) },
-        { icon: Scale, label: "Peso atual", value: `${profile.weight} kg`, action: () => navigate({ to: "/profile" }) },
-        { icon: Ruler, label: "Altura", value: `${profile.height} cm`, action: () => navigate({ to: "/profile" }) },
+        { icon: Scale, label: "Peso atual", value: profile.weight ? `${profile.weight} kg` : "—", action: () => navigate({ to: "/profile" }) },
+        { icon: Ruler, label: "Altura", value: profile.height ? `${profile.height} cm` : "—", action: () => navigate({ to: "/profile" }) },
       ],
     },
     {
