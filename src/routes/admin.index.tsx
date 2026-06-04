@@ -153,6 +153,7 @@ function AdminDashboard() {
   const cards = [
     { label: "Total de usuários", value: stats.total, icon: Users, color: "text-primary" },
     { label: "Plano Gratuito", value: stats.free, icon: Users, color: "text-muted-foreground" },
+    { label: "Plano Start", value: stats.start, icon: Crown, color: "text-primary" },
     { label: "Plano PRO", value: stats.pro, icon: Crown, color: "text-nutrisnap-green" },
     { label: "Plano Premium", value: stats.premium, icon: TrendingUp, color: "text-chart-1" },
   ];
