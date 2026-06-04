@@ -139,7 +139,7 @@ function AdminDashboard() {
       if (p.subscription_plan === "free") return;
       const m = p.created_at?.slice(0, 7);
       if (!m) return;
-      const value = p.subscription_plan === "pro" ? 19.9 : 39.9;
+      const value = p.subscription_plan === "start" ? 9.9 : p.subscription_plan === "pro" ? 19.9 : 39.9;
       months[m] = (months[m] || 0) + value;
     });
     return Object.entries(months)
