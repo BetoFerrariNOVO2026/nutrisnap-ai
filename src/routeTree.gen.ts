@@ -13,6 +13,7 @@ import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as ScanRouteImport } from './routes/scan'
 import { Route as SalesRouteImport } from './routes/sales'
 import { Route as RecipesRouteImport } from './routes/recipes'
+import { Route as QuizRouteImport } from './routes/quiz'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as NotificationsRouteImport } from './routes/notifications'
@@ -49,6 +50,11 @@ const SalesRoute = SalesRouteImport.update({
 const RecipesRoute = RecipesRouteImport.update({
   id: '/recipes',
   path: '/recipes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const QuizRoute = QuizRouteImport.update({
+  id: '/quiz',
+  path: '/quiz',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProfileRoute = ProfileRouteImport.update({
@@ -150,6 +156,7 @@ export interface FileRoutesByFullPath {
   '/notifications': typeof NotificationsRoute
   '/pricing': typeof PricingRoute
   '/profile': typeof ProfileRoute
+  '/quiz': typeof QuizRoute
   '/recipes': typeof RecipesRoute
   '/sales': typeof SalesRoute
   '/scan': typeof ScanRoute
@@ -172,6 +179,7 @@ export interface FileRoutesByTo {
   '/notifications': typeof NotificationsRoute
   '/pricing': typeof PricingRoute
   '/profile': typeof ProfileRoute
+  '/quiz': typeof QuizRoute
   '/recipes': typeof RecipesRoute
   '/sales': typeof SalesRoute
   '/scan': typeof ScanRoute
@@ -196,6 +204,7 @@ export interface FileRoutesById {
   '/notifications': typeof NotificationsRoute
   '/pricing': typeof PricingRoute
   '/profile': typeof ProfileRoute
+  '/quiz': typeof QuizRoute
   '/recipes': typeof RecipesRoute
   '/sales': typeof SalesRoute
   '/scan': typeof ScanRoute
@@ -221,6 +230,7 @@ export interface FileRouteTypes {
     | '/notifications'
     | '/pricing'
     | '/profile'
+    | '/quiz'
     | '/recipes'
     | '/sales'
     | '/scan'
@@ -243,6 +253,7 @@ export interface FileRouteTypes {
     | '/notifications'
     | '/pricing'
     | '/profile'
+    | '/quiz'
     | '/recipes'
     | '/sales'
     | '/scan'
@@ -266,6 +277,7 @@ export interface FileRouteTypes {
     | '/notifications'
     | '/pricing'
     | '/profile'
+    | '/quiz'
     | '/recipes'
     | '/sales'
     | '/scan'
@@ -290,6 +302,7 @@ export interface RootRouteChildren {
   NotificationsRoute: typeof NotificationsRoute
   PricingRoute: typeof PricingRoute
   ProfileRoute: typeof ProfileRoute
+  QuizRoute: typeof QuizRoute
   RecipesRoute: typeof RecipesRoute
   SalesRoute: typeof SalesRoute
   ScanRoute: typeof ScanRoute
@@ -326,6 +339,13 @@ declare module '@tanstack/react-router' {
       path: '/recipes'
       fullPath: '/recipes'
       preLoaderRoute: typeof RecipesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/quiz': {
+      id: '/quiz'
+      path: '/quiz'
+      fullPath: '/quiz'
+      preLoaderRoute: typeof QuizRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/profile': {
@@ -478,6 +498,7 @@ const rootRouteChildren: RootRouteChildren = {
   NotificationsRoute: NotificationsRoute,
   PricingRoute: PricingRoute,
   ProfileRoute: ProfileRoute,
+  QuizRoute: QuizRoute,
   RecipesRoute: RecipesRoute,
   SalesRoute: SalesRoute,
   ScanRoute: ScanRoute,
