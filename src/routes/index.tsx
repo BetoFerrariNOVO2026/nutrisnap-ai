@@ -145,14 +145,19 @@ function SalesPage() {
             transition={{ duration: 0.5, delay: 0.5 }}
             className="flex flex-col gap-3"
           >
-            <Link to="/login">
+            <Link to="/quiz">
               <Button className="w-full h-12 rounded-xl text-sm font-semibold gradient-orange text-primary-foreground border-0">
-                Começar grátis
+                🎁 Fazer quiz e ganhar análise grátis
                 <ChevronRight className="h-4 w-4 ml-1" />
               </Button>
             </Link>
+            <Link to="/login">
+              <Button variant="outline" className="w-full h-11 rounded-xl text-sm">
+                Já tenho conta
+              </Button>
+            </Link>
             <p className="text-center text-xs text-muted-foreground">
-              3 análises gratuitas por dia • Sem cartão de crédito
+              Descubra seu plano ideal em 2 minutos • Sem cartão
             </p>
           </motion.div>
         </div>
