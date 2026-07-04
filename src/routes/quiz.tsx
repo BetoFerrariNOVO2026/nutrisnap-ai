@@ -122,8 +122,7 @@ function QuizPage() {
   }, [step, current.kind]);
 
   const calc = useMemo(() => {
-    const { weight = 70, height = 170, age = 30, gender = "female", activity = "light", targetWeight = 65, goal = "lose" } = answers;
-    // Mifflin-St Jeor
+    const { weight = 70, height = 170, age = 30, gender = "female", activity = "light", targetWeight = 65, goal = "lose", obstacle, diet } = answers;
     const bmr =
       gender === "male"
         ? 10 * weight + 6.25 * height - 5 * age + 5
@@ -136,6 +135,27 @@ function QuizPage() {
     const diff = weight - targetWeight;
     const weeks = Math.max(1, Math.round((Math.abs(diff) / 0.5)));
     const bmi = weight / Math.pow(height / 100, 2);
+    const bmiLabel =
+      bmi < 18.5 ? "Abaixo do peso" :
+      bmi < 25 ? "Peso saudável" :
+      bmi < 30 ? "Sobrepeso" : "Obesidade";
+    const water = Math.round(weight * 35); // ml/dia
+    const steps = activity === "sedentary" ? 6000 : activity === "light" ? 8000 : 10000;
+    const meals = goal === "gain" ? 5 : 4;
+
+    // Personalized recommendations
+    const recs: string[] = [];
+    if (goal === "lose") recs.push(`Déficit de ~500 kcal/dia para perder ~0,5 kg/semana de forma saudável.`);
+    if (goal === "gain") recs.push(`Superávit de ~400 kcal com foco em proteínas para ganho de massa magra.`);
+    if (goal === "maintain") recs.push(`Manutenção calórica com foco em qualidade dos alimentos.`);
+    if (obstacle === "time") recs.push(`Escaneie o prato em 3s com a IA — sem precisar pesar ou anotar.`);
+    if (obstacle === "count") recs.push(`Deixe a IA contar calorias e macros de cada refeição por você.`);
+    if (obstacle === "cravings") recs.push(`Distribua a proteína em 4 refeições para reduzir vontade de doces.`);
+    if (obstacle === "routine") recs.push(`Notificações inteligentes para lembrar de registrar as refeições.`);
+    if (diet === "processed") recs.push(`Reduza ultraprocessados: troque 1 refeição/dia por comida caseira.`);
+    if (diet === "low") recs.push(`Mantenha carbo abaixo de ${Math.round(target * 0.2 / 4)}g/dia — sugerido para Low Carb.`);
+    if (bmi >= 25 && goal !== "lose") recs.push(`Seu IMC está em ${bmiLabel.toLowerCase()} — considere ajustar a meta.`);
+
     return {
       bmr: Math.round(bmr),
       tdee,
@@ -143,9 +163,14 @@ function QuizPage() {
       weeks,
       diff,
       bmi: bmi.toFixed(1),
+      bmiLabel,
       protein: Math.round(weight * 1.8),
       carbs: Math.round((target * 0.45) / 4),
       fat: Math.round((target * 0.25) / 9),
+      water,
+      steps,
+      meals,
+      recs,
     };
   }, [answers]);
 
