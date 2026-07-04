@@ -86,7 +86,7 @@ function AppLayout() {
   const location = useLocation();
   const isAdmin = location.pathname.startsWith("/admin");
   const isApi = location.pathname.startsWith("/api");
-  const hideNav = isAdmin || isApi || ["/login", "/", "/pricing"].includes(location.pathname);
+  const hideNav = isAdmin || isApi || ["/login", "/", "/pricing", "/quiz", "/sales"].includes(location.pathname);
 
   if (isAdmin || isApi) {
     return <Outlet />;

@@ -41,6 +41,37 @@ function PricingPage() {
       .then(({ data }) => {
         if (data) setRows(data as any as PlanRow[]);
       });
+
+    // InitiateCheckout listener — fires when user clicks a checkout button
+    const TARGETS = [
+      "SIM", "EU QUERO COMPLETO", "YES", "I WANT FULL ACCESS",
+      "COMPRAR AGORA", "PAGAR COM PIX", "PAGAR COM CARTÃO", "PAGAR COM CARTAO",
+    ];
+    const handler = (e: MouseEvent) => {
+      let el = e.target as HTMLElement | null;
+      for (let i = 0; i < 5 && el; i++) {
+        const tag = (el.tagName || "").toUpperCase();
+        const role = el.getAttribute?.("role");
+        if (tag === "BUTTON" || tag === "A" || role === "button") {
+          const txt = (el.textContent || "").replace(/\s+/g, " ").trim().toUpperCase();
+          const matched = TARGETS.find((t) => txt.includes(t));
+          if (matched) {
+            const anyEl = el as any;
+            if (anyEl.dataset.icFired !== "1") {
+              anyEl.dataset.icFired = "1";
+              const fbq = (window as any).fbq;
+              if (typeof fbq === "function") {
+                fbq("track", "InitiateCheckout", { content_name: matched, currency: "BRL" });
+              }
+            }
+            return;
+          }
+        }
+        el = el.parentElement;
+      }
+    };
+    document.addEventListener("click", handler, true);
+    return () => document.removeEventListener("click", handler, true);
   }, []);
 
   // Currency by language: pt -> R$, others -> US$
