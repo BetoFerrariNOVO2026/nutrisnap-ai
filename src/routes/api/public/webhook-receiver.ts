@@ -164,16 +164,25 @@ export const Route = createFileRoute("/api/public/webhook-receiver")({
 
           const fullPayloadText = JSON.stringify(body || {}).toLowerCase();
 
-          // Infer plan from product name keywords
+          // 1) Explicit override via URL query param, e.g. ?plan=pro
+          const planOverride = (url.searchParams.get("plan") || "").toLowerCase().trim();
+
+          // 2) Infer plan from product name keywords
           if (!planRaw) {
             if (/premium/.test(fullPayloadText)) planRaw = "premium";
             else if (/\bpro\b/.test(fullPayloadText)) planRaw = "pro";
+            else if (/\bstart\b/.test(fullPayloadText)) planRaw = "start";
           }
           let plan: string | undefined;
-          if (planRaw) {
+          if (planOverride && ["start", "pro", "premium"].includes(planOverride)) {
+            plan = planOverride;
+          } else if (planRaw) {
             const p = planRaw.toLowerCase();
             if (p.includes("premium")) plan = "premium";
             else if (p.includes("pro")) plan = "pro";
+            else if (p.includes("start")) plan = "start";
+            // If product is just "CaloriaX AI" (no tier keyword), default to "pro"
+            else if (p.includes("caloria")) plan = "pro";
             else plan = planRaw;
           }
 
@@ -188,10 +197,10 @@ export const Route = createFileRoute("/api/public/webhook-receiver")({
             customer_email: customer_email || null,
             plan: plan || planRaw || "unknown",
             status: "pending",
-            raw_payload: { __platform: platform, ...body },
+            raw_payload: { __platform: platform, __plan_override: planOverride || null, ...body },
           };
 
-          if (!customer_email || !plan || !["pro", "premium"].includes(plan)) {
+          if (!customer_email || !plan || !["start", "pro", "premium"].includes(plan)) {
             logRow.status = !customer_email
               ? "ignored_missing_email"
               : !plan
