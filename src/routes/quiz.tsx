@@ -522,14 +522,65 @@ function QuizPage() {
                   </div>
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-muted-foreground">IMC atual</span>
-                    <span className="font-semibold">{calc.bmi}</span>
+                    <span className="font-semibold">{calc.bmi} · {calc.bmiLabel}</span>
                   </div>
-                  {calc.diff > 0 && answers.goal === "lose" && (
+                  {calc.diff !== 0 && (
                     <div className="flex items-center justify-between text-sm border-t border-border pt-3">
                       <span className="text-muted-foreground">Previsão para meta</span>
                       <span className="font-semibold text-primary">~{calc.weeks} semanas</span>
                     </div>
                   )}
+                </div>
+
+                {/* Suggested habits / goals */}
+                <div className="rounded-2xl bg-nutrisnap-surface p-4 border border-border">
+                  <div className="flex items-center gap-2 mb-3">
+                    <Target className="h-4 w-4 text-primary" />
+                    <span className="text-sm font-semibold">Metas diárias sugeridas</span>
+                  </div>
+                  <div className="grid grid-cols-3 gap-3 text-center">
+                    <div>
+                      <p className="text-base font-bold text-nutrisnap-blue">{(calc.water / 1000).toFixed(1)}L</p>
+                      <p className="text-[10px] text-muted-foreground">Água/dia</p>
+                    </div>
+                    <div>
+                      <p className="text-base font-bold text-nutrisnap-green">{calc.steps.toLocaleString("pt-BR")}</p>
+                      <p className="text-[10px] text-muted-foreground">Passos/dia</p>
+                    </div>
+                    <div>
+                      <p className="text-base font-bold text-primary">{calc.meals}</p>
+                      <p className="text-[10px] text-muted-foreground">Refeições/dia</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Personalized recommendations */}
+                {calc.recs.length > 0 && (
+                  <div className="rounded-2xl bg-nutrisnap-surface p-4 border border-border space-y-2">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Sparkles className="h-4 w-4 text-primary" />
+                      <span className="text-sm font-semibold">Recomendações personalizadas</span>
+                    </div>
+                    {calc.recs.map((r, i) => (
+                      <div key={i} className="flex items-start gap-2 text-xs text-foreground/85">
+                        <Check className="h-3.5 w-3.5 text-nutrisnap-green shrink-0 mt-0.5" />
+                        <span>{r}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* Macros breakdown table */}
+                <div className="rounded-2xl bg-nutrisnap-surface p-4 border border-border">
+                  <div className="flex items-center gap-2 mb-3">
+                    <Zap className="h-4 w-4 text-primary" />
+                    <span className="text-sm font-semibold">Resumo dos macros calculados</span>
+                  </div>
+                  <div className="space-y-2 text-xs">
+                    <div className="flex justify-between"><span className="text-muted-foreground">Proteína (1.8g/kg)</span><span className="font-semibold">{calc.protein}g · {calc.protein * 4} kcal</span></div>
+                    <div className="flex justify-between"><span className="text-muted-foreground">Carboidratos (45%)</span><span className="font-semibold">{calc.carbs}g · {calc.carbs * 4} kcal</span></div>
+                    <div className="flex justify-between"><span className="text-muted-foreground">Gorduras (25%)</span><span className="font-semibold">{calc.fat}g · {calc.fat * 9} kcal</span></div>
+                  </div>
                 </div>
 
                 {/* Photo recap */}
@@ -571,12 +622,19 @@ function QuizPage() {
                   </div>
                 </div>
 
-                <div className="space-y-3 pt-2">
+                <div className="space-y-3 pt-2 pb-10">
                   <Button
-                    onClick={() => navigate({ to: "/login" })}
+                    onClick={() => navigate({ to: "/pricing" })}
                     className="w-full h-14 rounded-xl gradient-orange text-primary-foreground border-0 text-base font-semibold"
                   >
-                    Criar conta e ver planos <ChevronRight className="h-5 w-5 ml-1" />
+                    Ver planos e desbloquear <ChevronRight className="h-5 w-5 ml-1" />
+                  </Button>
+                  <Button
+                    onClick={() => navigate({ to: "/login" })}
+                    variant="outline"
+                    className="w-full h-12 rounded-xl"
+                  >
+                    Já tenho conta — entrar
                   </Button>
                   <p className="text-center text-xs text-muted-foreground">
                     ⚡ Oferta especial para novos usuários por tempo limitado
